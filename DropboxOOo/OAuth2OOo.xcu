@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<oor:component-data
+  xml:lang="en-US"
+  xmlns:oor="http://openoffice.org/2001/registry"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  oor:package="com.gmail.prrvchr.extensions"
+  oor:name="OAuth2OOo">
+    <node oor:name="Urls">
+        <node oor:name="vnd.dropbox-apps" oor:op="fuse">
+            <prop oor:name="Scope">
+                <value>Dropbox Drive</value>
+            </prop>
+        </node>
+    </node>
+    <node oor:name="Scopes">
+        <node oor:name="Dropbox Drive" oor:op="fuse">
+            <prop oor:name="Provider">
+                <value>Dropbox</value>
+            </prop>
+            <prop oor:name="Values">
+                <value>N/A</value>
+            </prop>
+        </node>
+    </node>
+    <node oor:name="Providers">
+        <node oor:name="Dropbox" oor:op="fuse">
+            <prop oor:name="ClientId">
+                <value>3aphs14urpklkit</value>
+            </prop>
+            <prop oor:name="ClientSecret">
+                <value>5v11s3m6p0djl17</value>
+            </prop>
+            <prop oor:name="AuthorizationUrl">
+                <value>https://www.dropbox.com/oauth2/authorize</value>
+            </prop>
+            <prop oor:name="AuthorizationParameters">
+                <value>{"locale": "current_language"}</value>
+            </prop>
+            <prop oor:name="TokenUrl">
+                <value>https://api.dropboxapi.com/oauth2/token</value>
+            </prop>
+            <prop oor:name="TokenParameters">
+                <value>{"client_secret": null}</value>
+            </prop>
+            <prop oor:name="CodeChallenge">
+                <value>false</value>
+            </prop>
+            <prop oor:name="CodeChallengeMethod">
+                <value>S256</value>
+            </prop>
+            <prop oor:name="HttpHandler">
+                <value>true</value>
+            </prop>
+            <prop oor:name="RedirectAddress">
+                <value>127.0.0.1</value>
+            </prop>
+            <prop oor:name="RedirectPort">
+                <value>8080</value>
+            </prop>
+        </node>
+    </node>
+</oor:component-data>
