@@ -1,7 +1,7 @@
 #!
 # -*- coding: utf-8 -*-
 
-
+from .configuration import g_oauth2
 from .configuration import g_scheme
 from .configuration import g_plugin
 from .configuration import g_provider

@@ -5,7 +5,8 @@
 g_scheme = 'vnd.dropbox-apps'
 
 g_plugin = 'com.gmail.prrvchr.extensions.DropboxOOo'
-g_provider = 'com.gmail.prrvchr.extensions.CloudUcpOOo'
+g_provider = 'com.gmail.prrvchr.extensions.CloudUcpOOo.ContentProvider'
+g_oauth2 = 'com.gmail.prrvchr.extensions.OAuth2OOo.OAuth2Service'
 
 g_host = 'api.dropboxapi.com'
 g_version = '2'

@@ -13,6 +13,7 @@ from com.sun.star.ucb import XParameterizedContentProvider
 
 from dropbox import g_plugin
 from dropbox import g_provider
+from dropbox import g_oauth2
 
 # pythonloader looks for a static g_ImplementationHelper variable
 g_ImplementationHelper = unohelper.ImplementationHelper()
@@ -39,7 +40,9 @@ class ContentProviderProxy(unohelper.Base,
     # XContentProviderFactory
     def createContentProvider(self, service):
         print("ContentProviderProxy.createContentProvider() %s" % service)
-        ucp = self.ctx.ServiceManager.createInstanceWithContext(service, self.ctx)
+        # First We must to load OAuth2Service to make the import available (lazy loading)
+        oauth2 = self.ctx.ServiceManager.createInstanceWithContext(g_oauth2, self.ctx)
+        ucp = self.ctx.ServiceManager.createInstanceWithContext(g_provider, self.ctx)
         provider = ucp.registerInstance(self.template, self.arguments, self.replace)
         return provider
 
@@ -49,7 +52,7 @@ class ContentProviderProxy(unohelper.Base,
         print("ContentProviderProxy.getContentProvider() 1")
         if provider.supportsService('com.sun.star.ucb.ContentProviderProxy'):
             print("ContentProviderProxy.getContentProvider() 2")
-            provider = self.createContentProvider('%s.ContentProvider' % g_provider)
+            provider = self.createContentProvider(g_provider)
             print("ContentProviderProxy.getContentProvider() 3")
         return provider
 
@@ -89,6 +92,6 @@ class ContentProviderProxy(unohelper.Base,
         return self._getUcb().queryContentProvider('%s://' % self.template)
 
 
-g_ImplementationHelper.addImplementation(ContentProviderProxy,                                               # UNO object class
-                                         g_ImplementationName,                                               # Implementation name
-                                        (g_ImplementationName, 'com.sun.star.ucb.ContentProviderProxy'))     # List of implemented services
+g_ImplementationHelper.addImplementation(ContentProviderProxy,
+                                         g_ImplementationName,
+                                        (g_ImplementationName, 'com.sun.star.ucb.ContentProviderProxy'))

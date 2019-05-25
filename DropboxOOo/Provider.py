@@ -4,16 +4,16 @@
 import uno
 import unohelper
 
-from com.sun.star.ucb.RestRequestTokenType import TOKEN_NONE
-from com.sun.star.ucb.RestRequestTokenType import TOKEN_URL
-from com.sun.star.ucb.RestRequestTokenType import TOKEN_REDIRECT
-from com.sun.star.ucb.RestRequestTokenType import TOKEN_QUERY
-from com.sun.star.ucb.RestRequestTokenType import TOKEN_JSON
+from com.sun.star.auth.RestRequestTokenType import TOKEN_NONE
+from com.sun.star.auth.RestRequestTokenType import TOKEN_URL
+from com.sun.star.auth.RestRequestTokenType import TOKEN_REDIRECT
+from com.sun.star.auth.RestRequestTokenType import TOKEN_QUERY
+from com.sun.star.auth.RestRequestTokenType import TOKEN_JSON
 
 # clouducp is only available after CloudUcpOOo as been loaded...
 try:
     from clouducp import ProviderBase
-    from clouducp import KeyMap
+    from oauth2 import KeyMap
 except ImportError:
     class ProviderBase():
         pass
@@ -51,12 +51,6 @@ class Provider(ProviderBase):
     def UploadUrl(self):
         return g_upload
     @property
-    def Folder(self):
-        return g_folder
-    @property
-    def Link(self):
-        return g_link
-    @property
     def Office(self):
         return g_office
     @property
@@ -70,7 +64,7 @@ class Provider(ProviderBase):
         return g_buffer
 
     def getRequestParameter(self, method, data=None):
-        parameter = uno.createUnoStruct('com.sun.star.ucb.RestRequestParameter')
+        parameter = uno.createUnoStruct('com.sun.star.auth.RestRequestParameter')
         parameter.Name = method
         if method == 'getUser':
             parameter.Method = 'POST'
@@ -84,14 +78,14 @@ class Provider(ProviderBase):
             parameter.Url = '%s/files/list_folder' % self.BaseUrl
             path = '' if data.getValue('IsRoot') else data.getValue('Id')
             parameter.Json = '{"path": "%s", "include_deleted": true}' % path
-            token = uno.createUnoStruct('com.sun.star.ucb.RestRequestToken')
+            token = uno.createUnoStruct('com.sun.star.auth.RestRequestToken')
             token.Type = TOKEN_URL | TOKEN_JSON
             token.Field = 'cursor'
             token.Value = '%s/files/list_folder/continue' % self.BaseUrl
             token.IsConditional = True
             token.ConditionField = 'has_more'
             token.ConditionValue = True
-            enumerator = uno.createUnoStruct('com.sun.star.ucb.RestRequestEnumerator')
+            enumerator = uno.createUnoStruct('com.sun.star.auth.RestRequestEnumerator')
             enumerator.Field = 'entries'
             enumerator.Token = token
             parameter.Enumerator = enumerator
@@ -103,16 +97,19 @@ class Provider(ProviderBase):
         elif method == 'updateTitle':
             parameter.Method = 'POST'
             parameter.Url = 'files/move_v2' % self.BaseUrl
-            path = '%s/%s' % (data.getValue('parent'), data.getValue('name'))
+            path = '' if data.getValue('AtRoot') else data.getValue('ParentId')
+            path += '/%s' % data.getValue('name')
             parameter.Json = '{"from_path": "%s","to_path": "%s"}' % (data.getValue('id'), path)
         elif method == 'updateTrashed':
             parameter.Method = 'POST'
             parameter.Url = '%s/files/delete_v2' % self.BaseUrl
-            parameter.Json = '{"path": "%s"}' % data.getValue('id')
+            parameter.Json = '{"path": "%s"}' % data.getValue('Id')
         elif method == 'insertContent':
             parameter.Method = 'POST'
             parameter.Url = '%s/files/create_folder_v2' % self.BaseUrl
-            parameter.Json = '{"path": "%s/%s"}' % (data.getValue('parent'), data.getValue('name'))
+            path = '' if data.getValue('AtRoot') else data.getValue('ParentId')
+            path += '/%s' % data.getValue('name')
+            parameter.Json = '{"path": "%s"}' % path
         elif method == 'getUploadLocation':
             parameter.Method = 'POST'
             parameter.Url = '%s/files/get_temporary_upload_link' % self.BaseUrl
@@ -124,7 +121,9 @@ class Provider(ProviderBase):
         elif method == 'getNewUploadLocation':
             parameter.Method = 'POST'
             parameter.Url = '%s/files/get_temporary_upload_link' % self.BaseUrl
-            path = '"path": "%s/%s"' % (data.getValue('parent'), data.getValue('name'))
+            path = '' if data.getValue('AtRoot') else data.getValue('ParentId')
+            path += '/%s' % data.getValue('name')
+            path = '"path": "%s"' % path
             mode = '"mode": "overwrite"'
             mute = '"mute": true'
             info = '{"commit_info": {%s, %s, %s}}' % (path, mode, mute)
@@ -205,7 +204,7 @@ class Provider(ProviderBase):
         id = user.getValue('root_info').getValue('root_namespace_id')
         root = KeyMap(**{'id': id})
         root.insertValue('name', 'Homework')
-        response = uno.createUnoStruct('com.sun.star.beans.Optional<com.sun.star.ucb.XRestKeyMap>')
+        response = uno.createUnoStruct('com.sun.star.beans.Optional<com.sun.star.auth.XRestKeyMap>')
         response.IsPresent = True
         response.Value = root
         return response
@@ -225,7 +224,7 @@ class Provider(ProviderBase):
 
     def getUpdateParameter(self, identifier, new, key):
         if new:
-             parameter = self.getRequestParameter('insertContent', identifier)
+            parameter = self.getRequestParameter('insertContent', identifier)
         elif key == 'Title':
             parameter = self.getRequestParameter('updateTitle', identifier)
         elif key == 'Trashed':
