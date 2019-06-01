@@ -77,7 +77,7 @@ class Provider(ProviderBase):
             parameter.Method = 'POST'
             parameter.Url = '%s/files/list_folder' % self.BaseUrl
             path = '' if data.getValue('IsRoot') else data.getValue('Id')
-            parameter.Json = '{"path": "%s", "include_deleted": true}' % path
+            parameter.Json = '{"path": "%s", "include_deleted": false}' % path
             token = uno.createUnoStruct('com.sun.star.auth.RestRequestToken')
             token.Type = TOKEN_URL | TOKEN_JSON
             token.Field = 'cursor'
@@ -96,7 +96,7 @@ class Provider(ProviderBase):
             parameter.Header = '{"Dropbox-API-Arg": "%s"}' % path
         elif method == 'updateTitle':
             parameter.Method = 'POST'
-            parameter.Url = 'files/move_v2' % self.BaseUrl
+            parameter.Url = '%s/files/move_v2' % self.BaseUrl
             path = '' if data.getValue('AtRoot') else data.getValue('ParentId')
             path += '/%s' % data.getValue('name')
             parameter.Json = '{"from_path": "%s","to_path": "%s"}' % (data.getValue('id'), path)
@@ -199,6 +199,17 @@ class Provider(ProviderBase):
         return False
     def getItemIsVersionable(self, item):
         return False
+
+    def getResponseId(self, response, item):
+        id = response.getDefaultValue('metadata', KeyMap()).getDefaultValue('id', None)
+        if id is None:
+            id = self.getItemId(item)
+        return id
+    def getResponseName(self, response, item):
+        name = response.getDefaultValue('metadata', KeyMap()).getDefaultValue('name', None)
+        if name is None:
+            name = self.getItemName(item)
+        return name
 
     def getRoot(self, user):
         id = user.getValue('root_info').getValue('root_namespace_id')
