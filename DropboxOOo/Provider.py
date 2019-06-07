@@ -143,7 +143,9 @@ class Provider(ProviderBase):
         return user.getValue('name').getValue('display_name')
 
     def getItemParent(self, item, rootid):
-        return item.getDefaultValue('parentReference', KeyMap()).getDefaultValue('id', rootid)
+        ref = item.getDefaultValue('parentReference', KeyMap())
+        parent = ref.getDefaultValue('id', rootid)
+        return (parent, )
 
     def getRootId(self, item):
         return self.getItemId(item)
@@ -173,17 +175,15 @@ class Provider(ProviderBase):
     def getItemName(self, item):
         return item.getDefaultValue('name', None)
     def getItemCreated(self, item, timestamp=None):
-        if timestamp:
-            created = item.getDefaultValue('server_modified', timestamp)
-        else:
-            created = item.getValue('server_modified')
-        return created
+        created = item.getDefaultValue('server_modified', None)
+        if created:
+            return self.parseDateTime(created, '%Y-%m-%dT%H:%M:%SZ')
+        return timestamp
     def getItemModified(self, item, timestamp=None):
-        if timestamp:
-            modified = item.getDefaultValue('client_modified', timestamp)
-        else:
-            modified = item.getValue('client_modified')
-        return modified
+        modified = item.getDefaultValue('client_modified', None)
+        if modified:
+            return self.parseDateTime(modified, '%Y-%m-%dT%H:%M:%SZ')
+        return timestamp
     def getItemMediaType(self, item):
         tag = item.getDefaultValue('.tag', 'folder')
         return 'application/octet-stream' if tag != 'folder' else self.Folder

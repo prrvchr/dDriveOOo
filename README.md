@@ -1,4 +1,4 @@
-# DropboxOOo v.0.0.1
+# DropboxOOo v.0.0.3
 
 ## Dropbox implementation for LibreOffice / OpenOffice.
 
@@ -12,13 +12,13 @@ You must install this extention first!!!
 
 Restart LibreOffice / OpenOffice after installation.
 
-### Install [CloudUcpOOo](https://github.com/prrvchr/CloudUcpOOo/raw/master/CloudUcpOOo.oxt) extention v 0.0.1.
+### Install [CloudUcpOOo](https://github.com/prrvchr/CloudUcpOOo/raw/master/CloudUcpOOo.oxt) extention v 0.0.3.
 
 You must install this extention first!!!
 
 Restart LibreOffice / OpenOffice after installation.
 
-### Install [DropboxOOo](https://github.com/prrvchr/DropboxOOo/raw/master/DropboxOOo.oxt) extention v 0.0.1.
+### Install [DropboxOOo](https://github.com/prrvchr/DropboxOOo/raw/master/DropboxOOo.oxt) extention v 0.0.3.
 
 Restart LibreOffice / OpenOffice after installation.
 
