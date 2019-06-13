@@ -98,8 +98,8 @@ class Provider(ProviderBase):
             parameter.Method = 'POST'
             parameter.Url = '%s/files/move_v2' % self.BaseUrl
             path = '' if data.getValue('AtRoot') else data.getValue('ParentId')
-            path += '/%s' % data.getValue('name')
-            parameter.Json = '{"from_path": "%s","to_path": "%s"}' % (data.getValue('id'), path)
+            path += '/%s' % data.getValue('Title')
+            parameter.Json = '{"from_path": "%s","to_path": "%s"}' % (data.getValue('Id'), path)
         elif method == 'updateTrashed':
             parameter.Method = 'POST'
             parameter.Url = '%s/files/delete_v2' % self.BaseUrl
@@ -108,12 +108,12 @@ class Provider(ProviderBase):
             parameter.Method = 'POST'
             parameter.Url = '%s/files/create_folder_v2' % self.BaseUrl
             path = '' if data.getValue('AtRoot') else data.getValue('ParentId')
-            path += '/%s' % data.getValue('name')
+            path += '/%s' % data.getValue('Title')
             parameter.Json = '{"path": "%s"}' % path
         elif method == 'getUploadLocation':
             parameter.Method = 'POST'
             parameter.Url = '%s/files/get_temporary_upload_link' % self.BaseUrl
-            path = '"path": "%s"' % data.getValue('id')
+            path = '"path": "%s"' % data.getValue('Id')
             mode = '"mode": "overwrite"'
             mute = '"mute": true'
             info = '{"commit_info": {%s, %s, %s}}' % (path, mode, mute)
@@ -122,7 +122,7 @@ class Provider(ProviderBase):
             parameter.Method = 'POST'
             parameter.Url = '%s/files/get_temporary_upload_link' % self.BaseUrl
             path = '' if data.getValue('AtRoot') else data.getValue('ParentId')
-            path += '/%s' % data.getValue('name')
+            path += '/%s' % data.getValue('Title')
             path = '"path": "%s"' % path
             mode = '"mode": "overwrite"'
             mute = '"mute": true'
@@ -132,7 +132,6 @@ class Provider(ProviderBase):
             parameter.Method = 'POST'
             parameter.Url = data.getValue('link')
             parameter.Header = '{"Content-Type": "application/octet-stream"}'
-            parameter.Optional = 'content-hash'
         return parameter
 
     def getUserId(self, user):
@@ -149,8 +148,8 @@ class Provider(ProviderBase):
 
     def getRootId(self, item):
         return self.getItemId(item)
-    def getRootName(self, item):
-        return self.getItemName(item)
+    def getRootTitle(self, item):
+        return self.getItemTitle(item)
     def getRootCreated(self, item, timestamp=None):
         return timestamp
     def getRootModified(self, item, timestamp=None):
@@ -172,7 +171,7 @@ class Provider(ProviderBase):
 
     def getItemId(self, item):
         return item.getDefaultValue('id', None)
-    def getItemName(self, item):
+    def getItemTitle(self, item):
         return item.getDefaultValue('name', None)
     def getItemCreated(self, item, timestamp=None):
         created = item.getDefaultValue('server_modified', None)
@@ -200,16 +199,16 @@ class Provider(ProviderBase):
     def getItemIsVersionable(self, item):
         return False
 
-    def getResponseId(self, response, item):
+    def getResponseId(self, response, default):
         id = response.getDefaultValue('metadata', KeyMap()).getDefaultValue('id', None)
         if id is None:
-            id = self.getItemId(item)
+            id = default
         return id
-    def getResponseName(self, response, item):
-        name = response.getDefaultValue('metadata', KeyMap()).getDefaultValue('name', None)
-        if name is None:
-            name = self.getItemName(item)
-        return name
+    def getResponseTitle(self, response, default):
+        title = response.getDefaultValue('metadata', KeyMap()).getDefaultValue('name', None)
+        if title is None:
+            title = default
+        return title
 
     def getRoot(self, user):
         id = user.getValue('root_info').getValue('root_namespace_id')
@@ -219,28 +218,6 @@ class Provider(ProviderBase):
         response.IsPresent = True
         response.Value = root
         return response
-
-    def getUploadParameter(self, identifier, new):
-        print("Provider.getUploadParameter() 1")
-        if new:
-            parameter = self.getRequestParameter('getNewUploadLocation', identifier)
-        else:
-            parameter = self.getRequestParameter('getUploadLocation', identifier)
-        print("Provider.getUploadParameter() 2")
-        response = self.Request.execute(parameter)
-        if response.IsPresent:
-            print("Provider.getUploadParameter() 3")
-            return self.getRequestParameter('getUploadStream', response.Value)
-        return None
-
-    def getUpdateParameter(self, identifier, new, key):
-        if new:
-            parameter = self.getRequestParameter('insertContent', identifier)
-        elif key == 'Title':
-            parameter = self.getRequestParameter('updateTitle', identifier)
-        elif key == 'Trashed':
-            parameter = self.getRequestParameter('updateTrashed', identifier)
-        return parameter
 
     # XServiceInfo
     def supportsService(self, service):
