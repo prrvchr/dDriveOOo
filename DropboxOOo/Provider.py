@@ -63,6 +63,10 @@ class Provider(ProviderBase):
     def Buffer(self):
         return g_buffer
 
+    @property
+    def TwoStepCreation(self):
+        return True
+
     def getRequestParameter(self, method, data=None):
         parameter = uno.createUnoStruct('com.sun.star.auth.RestRequestParameter')
         parameter.Name = method
@@ -104,12 +108,19 @@ class Provider(ProviderBase):
             parameter.Method = 'POST'
             parameter.Url = '%s/files/delete_v2' % self.BaseUrl
             parameter.Json = '{"path": "%s"}' % data.getValue('Id')
-        elif method == 'insertContent':
+        elif method == 'createNewFolder':
             parameter.Method = 'POST'
             parameter.Url = '%s/files/create_folder_v2' % self.BaseUrl
             path = '' if data.getValue('AtRoot') else data.getValue('ParentId')
             path += '/%s' % data.getValue('Title')
             parameter.Json = '{"path": "%s"}' % path
+        elif method == 'createNewFile':
+            parameter.Method = 'POST'
+            parameter.Url = '%s/file_requests/create' % self.BaseUrl
+            title = data.getValue('Title')
+            path = '/' if data.getValue('AtRoot') else data.getValue('ParentId')
+            path += '/%s' % title
+            parameter.Json = '{"title": "%s", "destination": "%s"}' % (title, path)
         elif method == 'getUploadLocation':
             parameter.Method = 'POST'
             parameter.Url = '%s/files/get_temporary_upload_link' % self.BaseUrl
@@ -124,7 +135,7 @@ class Provider(ProviderBase):
             path = '' if data.getValue('AtRoot') else data.getValue('ParentId')
             path += '/%s' % data.getValue('Title')
             path = '"path": "%s"' % path
-            mode = '"mode": "overwrite"'
+            mode = '"mode": "add"'
             mute = '"mute": true'
             info = '{"commit_info": {%s, %s, %s}}' % (path, mode, mute)
             parameter.Json = info
@@ -218,6 +229,10 @@ class Provider(ProviderBase):
         response.IsPresent = True
         response.Value = root
         return response
+
+    def createNewFile(self, uploader, item):
+        parameter = self.getRequestParameter('createNewFile', item)
+        return self.Request.execute(parameter)
 
     # XServiceInfo
     def supportsService(self, service):
