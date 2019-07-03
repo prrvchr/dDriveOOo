@@ -13,7 +13,6 @@ from com.sun.star.auth.RestRequestTokenType import TOKEN_JSON
 # clouducp is only available after CloudUcpOOo as been loaded...
 try:
     from clouducp import ProviderBase
-    from oauth2 import KeyMap
 except ImportError:
     class ProviderBase():
         pass
@@ -153,7 +152,7 @@ class Provider(ProviderBase):
         return user.getValue('name').getValue('display_name')
 
     def getItemParent(self, item, rootid):
-        ref = item.getDefaultValue('parentReference', KeyMap())
+        ref = item.getDefaultValue('parentReference', self.Request.getKeyMap())
         parent = ref.getDefaultValue('id', rootid)
         return (parent, )
 
@@ -211,26 +210,27 @@ class Provider(ProviderBase):
         return False
 
     def getResponseId(self, response, default):
-        id = response.getDefaultValue('metadata', KeyMap()).getDefaultValue('id', None)
+        id = response.getDefaultValue('metadata', self.Request.getKeyMap()).getDefaultValue('id', None)
         if id is None:
             id = default
         return id
     def getResponseTitle(self, response, default):
-        title = response.getDefaultValue('metadata', KeyMap()).getDefaultValue('name', None)
+        title = response.getDefaultValue('metadata', self.Request.getKeyMap()).getDefaultValue('name', None)
         if title is None:
             title = default
         return title
 
     def getRoot(self, user):
         id = user.getValue('root_info').getValue('root_namespace_id')
-        root = KeyMap(**{'id': id})
+        root = self.Request.getKeyMap()
+        root.insertValue('id', id)
         root.insertValue('name', 'Homework')
         response = uno.createUnoStruct('com.sun.star.beans.Optional<com.sun.star.auth.XRestKeyMap>')
         response.IsPresent = True
         response.Value = root
         return response
 
-    def createNewFile(self, uploader, item):
+    def createFile(self, uploader, item):
         parameter = self.getRequestParameter('createNewFile', item)
         return self.Request.execute(parameter)
 
