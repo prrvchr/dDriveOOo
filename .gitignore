@@ -1,0 +1,5 @@
+#Ignore Link File
+/DropboxOOo/pythonpath/dropbox/logger.py
+/DropboxOOo/pythonpath/dropbox/contenttools.py
+/DropboxOOo/pythonpath/dropbox/unolib.py
+/DropboxOOo/pythonpath/dropbox/unotools.py

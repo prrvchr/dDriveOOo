@@ -42,11 +42,11 @@ g_ImplementationName = '%s.Provider' % g_plugin
 class Provider(ProviderBase):
     def __init__(self, ctx):
         self.ctx = ctx
-        self.Scheme = None
-        self.Plugin = None
-        self.Link = None
-        self.Folder = None
-        self.SourceURL = None
+        self.Scheme = ''
+        self.Plugin = ''
+        self.Link = ''
+        self.Folder = ''
+        self.SourceURL = ''
         self.SessionMode = OFFLINE
         self._Error = ''
         self.Request = self._getRequest()
@@ -163,7 +163,7 @@ class Provider(ProviderBase):
         return user.getValue('name').getValue('display_name')
 
     def getItemParent(self, item, rootid):
-        ref = item.getDefaultValue('parentReference', self.Request.getKeyMap())
+        ref = item.getDefaultValue('parentReference', self._getKeyMap())
         parent = ref.getDefaultValue('id', rootid)
         return (parent, )
 
@@ -221,19 +221,19 @@ class Provider(ProviderBase):
         return False
 
     def getResponseId(self, response, default):
-        id = response.getDefaultValue('metadata', self.Request.getKeyMap()).getDefaultValue('id', None)
+        id = response.getDefaultValue('metadata', self._getKeyMap()).getDefaultValue('id', None)
         if id is None:
             id = default
         return id
     def getResponseTitle(self, response, default):
-        title = response.getDefaultValue('metadata', self.Request.getKeyMap()).getDefaultValue('name', None)
+        title = response.getDefaultValue('metadata', self._getKeyMap()).getDefaultValue('name', None)
         if title is None:
             title = default
         return title
 
     def getRoot(self, user):
         id = user.getValue('root_info').getValue('root_namespace_id')
-        root = self.Request.getKeyMap()
+        root = self._getKeyMap()
         root.insertValue('id', id)
         root.insertValue('name', 'Homework')
         response = uno.createUnoStruct('com.sun.star.beans.Optional<com.sun.star.auth.XRestKeyMap>')
