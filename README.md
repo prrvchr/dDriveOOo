@@ -1,6 +1,6 @@
 **The use of this software subjects you to our** [Terms Of Use](https://prrvchr.github.io/DropboxOOo/DropboxOOo/registration/TermsOfUse_en) **and** [Data Protection Policy](https://prrvchr.github.io/DropboxOOo/DropboxOOo/registration/PrivacyPolicy_en)
 
-## DropboxOOo v.0.0.3
+## DropboxOOo v.0.0.4
 
 ### Dropbox implementation for LibreOffice / OpenOffice.
 

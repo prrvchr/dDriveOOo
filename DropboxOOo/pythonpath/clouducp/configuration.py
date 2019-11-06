@@ -1,12 +1,23 @@
 #!
-# -*- coding: utf_8 -*-
+# -*- coding: utf-8 -*-
 
+# Request / OAuth2 configuration
+g_oauth2 = 'com.gmail.prrvchr.extensions.OAuth2OOo.OAuth2Service'
+g_timeout = (15, 60)
 
+# DataSource configuration
+g_protocol = 'jdbc:hsqldb:'
+g_path = 'hsqldb'
+g_jar = 'hsqldb.jar'
+g_class = 'org.hsqldb.jdbcDriver'
+g_options = ';default_schema=true;hsqldb.default_table_type=cached;get_column_name=false;ifexists=false'
+g_shutdown = ';shutdown=true'
+g_csv = '%s.csv;fs=|;ignore_first=true;encoding=UTF-8;quoted=true'
+
+# Provider configuration
 g_scheme = 'vnd.dropbox-apps'
 
 g_plugin = 'com.gmail.prrvchr.extensions.DropboxOOo'
-g_provider = 'com.gmail.prrvchr.extensions.CloudUcpOOo.ContentProvider'
-g_oauth2 = 'com.gmail.prrvchr.extensions.OAuth2OOo.OAuth2Service'
 
 g_host = 'api.dropboxapi.com'
 g_version = '2'
@@ -35,4 +46,3 @@ g_doc_map = {'application/vnd.microsoft-apps.document':     'application/vnd.oas
              'application/vnd.microsoft-apps.spreadsheet':  'application/x-vnd.oasis.opendocument.spreadsheet',
              'application/vnd.microsoft-apps.presentation': 'application/vnd.oasis.opendocument.presentation',
              'application/vnd.microsoft-apps.drawing':      'application/pdf'}
-

@@ -1,5 +1,22 @@
 #Ignore Link File
-/DropboxOOo/pythonpath/dropbox/logger.py
-/DropboxOOo/pythonpath/dropbox/contenttools.py
-/DropboxOOo/pythonpath/dropbox/unolib.py
-/DropboxOOo/pythonpath/dropbox/unotools.py
+/DropboxOOo/types.rdb
+/DropboxOOo/ContentProvider.py
+/DropboxOOo/Content.py
+/DropboxOOo/pythonpath/clouducp/content.py
+/DropboxOOo/pythonpath/clouducp/contentcore.py
+/DropboxOOo/pythonpath/clouducp/contentlib.py
+/DropboxOOo/pythonpath/clouducp/contenttools.py
+/DropboxOOo/pythonpath/clouducp/datasource.py
+/DropboxOOo/pythonpath/clouducp/dbinit.py
+/DropboxOOo/pythonpath/clouducp/dbqueries.py
+/DropboxOOo/pythonpath/clouducp/dbtools.py
+/DropboxOOo/pythonpath/clouducp/identifier.py
+/DropboxOOo/pythonpath/clouducp/keymap.py
+/DropboxOOo/pythonpath/clouducp/logger.py
+/DropboxOOo/pythonpath/clouducp/oauth2core.py
+/DropboxOOo/pythonpath/clouducp/oauth2lib.py
+/DropboxOOo/pythonpath/clouducp/providerbase.py
+/DropboxOOo/pythonpath/clouducp/unocore.py
+/DropboxOOo/pythonpath/clouducp/unolib.py
+/DropboxOOo/pythonpath/clouducp/unotools.py
+/DropboxOOo/pythonpath/clouducp/user.py

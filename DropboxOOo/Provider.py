@@ -19,28 +19,22 @@ from com.sun.star.ucb.RestDataSourceSyncMode import SYNC_RENAMED
 from com.sun.star.ucb.RestDataSourceSyncMode import SYNC_REWRITED
 from com.sun.star.ucb.RestDataSourceSyncMode import SYNC_TRASHED
 
-# clouducp is only available after CloudUcpOOo as been loaded...
-try:
-    from clouducp import ProviderBase
-except ImportError:
-    class ProviderBase():
-        pass
-
-from dropbox import g_oauth2
-from dropbox import g_plugin
-from dropbox import g_host
-from dropbox import g_url
-from dropbox import g_upload
-from dropbox import g_userfields
-from dropbox import g_drivefields
-from dropbox import g_itemfields
-from dropbox import g_folder
-from dropbox import g_office
-from dropbox import g_link
-from dropbox import g_doc_map
-from dropbox import g_chunk
-from dropbox import g_buffer
-from dropbox import getLogger
+from clouducp import g_oauth2
+from clouducp import g_plugin
+from clouducp import g_host
+from clouducp import g_url
+from clouducp import g_upload
+from clouducp import g_userfields
+from clouducp import g_drivefields
+from clouducp import g_itemfields
+from clouducp import g_folder
+from clouducp import g_office
+from clouducp import g_link
+from clouducp import g_doc_map
+from clouducp import g_chunk
+from clouducp import g_buffer
+from clouducp import ProviderBase
+from clouducp import getLogger
 
 # pythonloader looks for a static g_ImplementationHelper variable
 g_ImplementationHelper = unohelper.ImplementationHelper()
