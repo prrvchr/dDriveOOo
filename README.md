@@ -32,13 +32,13 @@ Search for: UseSystemFileDialog (Found under: org.openoffice.Office.Common > Mis
 
 Edit or change "true" to "false" (set it to "false")
 
-#### Open your OneDrive:
+#### Open your Dropbox:
 
 In File - Open - File name enter: vnd.dropbox-apps://your_account/ or vnd.dropbox-apps:///
 
 If you don't give your_account, you will be asked for...
 
-After authorizing the OAuthOOo application to access your OneDrive, your OneDrive should open!!! normally  ;-)
+After authorizing the OAuthOOo application to access your Dropbox, your Dropbox should open!!! normally  ;-)
 
 ### Has been tested with:
 
