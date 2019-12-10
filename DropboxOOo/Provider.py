@@ -34,7 +34,6 @@ from clouducp import g_doc_map
 from clouducp import g_chunk
 from clouducp import g_buffer
 from clouducp import ProviderBase
-from clouducp import getLogger
 
 # pythonloader looks for a static g_ImplementationHelper variable
 g_ImplementationHelper = unohelper.ImplementationHelper()
@@ -51,8 +50,6 @@ class Provider(ProviderBase):
         self.SourceURL = ''
         self.SessionMode = OFFLINE
         self._Error = ''
-        self.Logger = getLogger(self.ctx)
-        #self.Request = self._getRequest()
 
     @property
     def Host(self):
@@ -234,7 +231,7 @@ class Provider(ProviderBase):
             title = default
         return title
 
-    def getRoot(self, user):
+    def getRoot(self, request, user):
         id = user.getValue('root_info').getValue('root_namespace_id')
         root = self._getKeyMap()
         root.insertValue('id', id)
