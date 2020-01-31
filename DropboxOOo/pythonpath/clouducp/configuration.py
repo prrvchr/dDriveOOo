@@ -4,8 +4,8 @@
 # Provider configuration
 g_scheme = 'vnd.dropbox-apps'
 g_extension = 'DropboxOOo'
-g_plugin = 'com.gmail.prrvchr.extensions.%s' % g_extension
-g_logger = '%s.Logger' % g_plugin
+g_identifier = 'com.gmail.prrvchr.extensions.%s' % g_extension
+g_logger = '%s.Logger' % g_identifier
 
 g_host = 'api.dropboxapi.com'
 g_version = '2'
