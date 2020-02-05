@@ -7,6 +7,7 @@ g_extension = 'DropboxOOo'
 g_identifier = 'com.gmail.prrvchr.extensions.%s' % g_extension
 g_logger = '%s.Logger' % g_identifier
 
+g_provider = 'Dropbox'
 g_host = 'api.dropboxapi.com'
 g_version = '2'
 g_url = 'https://%s/%s' % (g_host, g_version)
