@@ -155,6 +155,17 @@ class ProviderBase(ProviderObject,
         return True
 
     # Can be rewrited method
+    def initUser(self, request, database, user):
+        pass
+    def initDriveContent(self, rootid):
+        self._folders = [rootid]
+    def hasDriveContent(self):
+        return len(self._folders) > 0
+    def getDriveContent(self):
+        if self.hasDriveContent():
+            return self._folders.pop(0)
+    def setDriveContent(self, item):
+        pass
     def isFolder(self, contenttype):
         return contenttype == self.Folder
     def isLink(self, contenttype):

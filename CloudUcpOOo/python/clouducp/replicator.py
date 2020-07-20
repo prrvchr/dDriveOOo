@@ -28,6 +28,7 @@ from .dbtools import registerDataSource
 from .logger import logMessage
 from .logger import getMessage
 
+from collections import OrderedDict
 from threading import Thread
 import traceback
 import time
@@ -91,7 +92,7 @@ class Replicator(unohelper.Base,
                 if not user.Token:
                     start = self._initUser(user)
                     #start = self.DataBase.getUserTimeStamp(user.Id)
-                    self._setSyncToken(user)
+                    user.Provider.initUser(user.Request, self.DataBase, user.MetaData)
                 else:
                     start = self.DataBase.getUserTimeStamp(user.Id)
                 if user.Token:
@@ -106,10 +107,13 @@ class Replicator(unohelper.Base,
             print("Replicator.synchronize() ERROR: %s - %s" % (e, traceback.print_exc()))
 
     def _initUser(self, user):
-        # This procedure corresponds to the initial pull
-        rejected, rows, page, row, start = self._updateDrive(user)
-        print("Replicator._initUser() 1 %s - %s - %s - %s" % (len(rows), all(rows), page, row))
-        msg = getMessage(self.ctx, 120, (page, row, len(rows)))
+        # In order to make the creation of files or directories possible quickly,
+        # it is necessary to run the verification of the identifiers.
+        self._checkNewIdentifier(user)
+        # This procedure corresponds to the initial pull for a new User (ie: without Token)
+        rejected, pages, rows, count, start = self._updateDrive(user)
+        print("Replicator._initUser() 1 count: %s - %s pages - %s rows" % (count, pages, rows))
+        msg = getMessage(self.ctx, 120, (pages, rows, count))
         logMessage(self.ctx, INFO, msg, 'Replicator', '_syncData()')
         if len(rejected):
             msg = getMessage(self.ctx, 121, len(rejected))
@@ -117,7 +121,7 @@ class Replicator(unohelper.Base,
         for item in rejected:
             msg = getMessage(self.ctx, 122, item)
             logMessage(self.ctx, SEVERE, msg, 'Replicator', '_syncData()')
-        print("Replicator._initUser() 2 %s" % (all(rows), ))
+        print("Replicator._initUser() 2 %s" % count)
         self.fullPull = True
         return start
 
@@ -149,7 +153,7 @@ class Replicator(unohelper.Base,
                                                                                                  item.getValue('Size')))
                     chunk = user.Provider.Chunk
                     url = user.Provider.SourceURL
-                    uploader = user.Request.getUploader(chunk, url, self.DataBase.callBack)
+                    uploader = user.Request.getUploader(chunk, url, self)
                     results.append(self._synchronizeItems(user, uploader, item))
             print("Replicator._pushData() Created / Updated Items: %s" % (results, ))
             if all(results):
@@ -159,14 +163,12 @@ class Replicator(unohelper.Base,
         except Exception as e:
             print("Replicator.synchronize() ERROR: %s - %s" % (e, traceback.print_exc()))
 
-    def _setSyncToken(self, user):
-        data = user.Provider.getToken(user.Request, user.MetaData)
-        if data.IsPresent:
-            token = user.Provider.getUserToken(data.Value)
-            self.DataBase.updateToken(user.MetaData, token)
-
     def _checkNewIdentifier(self, user):
-        if user.Provider.isOffLine() or not user.Provider.GenerateIds:
+        if not user.Provider.GenerateIds:
+            user.CanAddChild = True
+            return
+        if user.Provider.isOffLine():
+            user.CanAddChild = self.DataBase.countIdentifier(user.Id) > 0
             return
         if self.DataBase.countIdentifier(user.Id) < min(user.Provider.IdentifierRange):
             enumerator = user.Provider.getIdentifier(user.Request, user.MetaData)
@@ -177,24 +179,54 @@ class Replicator(unohelper.Base,
     def _updateDrive(self, user):
         separator = ','
         start = parseDateTime()
+        rootid = user.RootId
         call = self.DataBase.getDriveCall(user.Id, separator, 1, start)
-        roots = [user.RootId]
-        rows, items, parents, page, row = self._getDriveContent(call, user, roots, separator, start)
-        rows += self._filterParents(call, user.Provider, items, parents, roots, separator, start)
-        rejected = self._getRejectedItems(user.Provider, parents, items)
-        if row > 0:
+        orphans, pages, rows, count = self._getDriveContent(call, user.Provider, user.Request, rootid, separator, start)
+        #rows += self._filterParents(call, user.Provider, items, parents, roots, separator, start)
+        rejected = self._getRejectedItems(user.Provider, orphans, rootid)
+        if count > 0:
             call.executeBatch()
         call.close()
         end = parseDateTime()
         self.DataBase.updateUserTimeStamp(end)
-        return rejected, rows, page, row, end
+        return rejected, pages, rows, count, end
 
-    def _getDriveContent(self, call, user, roots, separator, start):
+
+    def _getDriveContent(self, call, provider, request, rootid, separator, start):
+        orphans = OrderedDict()
+        roots = [rootid]
+        pages = 0
+        rows = 0
+        count = 0
+        provider.initDriveContent(rootid)
+        while provider.hasDriveContent():
+            parameter = provider.getRequestParameter('getDriveContent', provider.getDriveContent())
+            enumerator = request.getIterator(parameter, None)
+            while enumerator.hasMoreElements():
+                item = enumerator.nextElement()
+                if self._setDriveCall(call, provider, roots, orphans, rootid, item, separator, start):
+                    provider.setDriveContent(item)
+                    count += 1
+            pages += enumerator.PageCount
+            rows += enumerator.RowCount
+        return orphans, pages, rows, count
+
+    def _setDriveCall(self, call, provider, roots, orphans, rootid, item, separator, timestamp):
+        itemid = provider.getItemId(item)
+        parents = provider.getItemParent(item, rootid)
+        if not all(parent in roots for parent in parents):
+            orphans[itemid] = item
+            return False
+        roots.append(itemid)
+        self.DataBase.setDriveCall(call, provider, item, itemid, parents, separator, timestamp)
+        return True
+
+    def _getDriveContent1(self, call, user, roots, separator, start):
         rows = []
         items = {}
         childs = []
         provider = user.Provider
-        parameter = provider.getRequestParameter('getDriveContent', user.MetaData)
+        parameter = provider.getRequestParameter('getDriveContent', None)
         enumerator = user.Request.getIterator(parameter, None)
         while enumerator.hasMoreElements():
             item = enumerator.nextElement()
@@ -225,10 +257,12 @@ class Replicator(unohelper.Base,
             childs.reverse()
         return rows
 
-    def _getRejectedItems(self, provider, items, data):
+    def _getRejectedItems(self, provider, items, rootid):
         rejected = []
-        for itemid, parents in items:
-            title = provider.getItemTitle(data[itemid])
+        for itemid in items:
+            item = items[itemid]
+            title = provider.getItemTitle(item)
+            parents = provider.getItemParent(item, rootid)
             rejected.append((title, itemid, ','.join(parents)))
         return rejected
 
@@ -267,3 +301,7 @@ class Replicator(unohelper.Base,
         except Exception as e:
             msg = "ERROR: %s - %s" % (e, traceback.print_exc())
             logMessage(self.ctx, SEVERE, msg, "Replicator", "_synchronizeItems()")
+
+    def callBack(self, item, response):
+        if response.IsPresent:
+            self.DataBase.updateItemId(self.Provider, item, response.Value)
