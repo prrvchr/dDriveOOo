@@ -4,20 +4,11 @@
 import uno
 import unohelper
 
-from com.sun.star.ucb.ConnectionMode import OFFLINE
-from com.sun.star.ucb.ConnectionMode import ONLINE
 from com.sun.star.auth.RestRequestTokenType import TOKEN_NONE
 from com.sun.star.auth.RestRequestTokenType import TOKEN_URL
 from com.sun.star.auth.RestRequestTokenType import TOKEN_REDIRECT
 from com.sun.star.auth.RestRequestTokenType import TOKEN_QUERY
 from com.sun.star.auth.RestRequestTokenType import TOKEN_JSON
-from com.sun.star.ucb.RestDataSourceSyncMode import SYNC_RETRIEVED
-from com.sun.star.ucb.RestDataSourceSyncMode import SYNC_CREATED
-from com.sun.star.ucb.RestDataSourceSyncMode import SYNC_FOLDER
-from com.sun.star.ucb.RestDataSourceSyncMode import SYNC_FILE
-from com.sun.star.ucb.RestDataSourceSyncMode import SYNC_RENAMED
-from com.sun.star.ucb.RestDataSourceSyncMode import SYNC_REWRITED
-from com.sun.star.ucb.RestDataSourceSyncMode import SYNC_TRASHED
 
 from dropbox import ProviderBase
 from dropbox import g_identifier
@@ -48,8 +39,8 @@ class Provider(ProviderBase):
         self.Link = ''
         self.Folder = ''
         self.SourceURL = ''
-        self.SessionMode = OFFLINE
         self._Error = ''
+        self._folders = []
 
     @property
     def Name(self):
@@ -75,10 +66,6 @@ class Provider(ProviderBase):
     @property
     def Buffer(self):
         return g_buffer
-
-    @property
-    def FileSyncModes(self):
-        return (SYNC_CREATED, SYNC_REWRITED)
 
     def getRequestParameter(self, method, data=None):
         parameter = uno.createUnoStruct('com.sun.star.auth.RestRequestParameter')
@@ -244,9 +231,12 @@ class Provider(ProviderBase):
         response.Value = root
         return response
 
-    def createFile(self, uploader, item):
+    def createFile(self, request, uploader, item):
         parameter = self.getRequestParameter('createNewFile', item)
-        return self.Request.execute(parameter)
+        response = request.execute(parameter)
+        if response.IsPresent:
+            return True
+        return False
 
     # XServiceInfo
     def supportsService(self, service):
