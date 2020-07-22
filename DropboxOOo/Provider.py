@@ -9,6 +9,7 @@ from com.sun.star.auth.RestRequestTokenType import TOKEN_URL
 from com.sun.star.auth.RestRequestTokenType import TOKEN_REDIRECT
 from com.sun.star.auth.RestRequestTokenType import TOKEN_QUERY
 from com.sun.star.auth.RestRequestTokenType import TOKEN_JSON
+from com.sun.star.auth.RestRequestTokenType import TOKEN_SYNC
 
 from dropbox import ProviderBase
 from dropbox import g_identifier
@@ -153,7 +154,7 @@ class Provider(ProviderBase):
             parameter.Method = 'POST'
             parameter.Url = '%s/file_requests/create' % self.BaseUrl
             title = data.getValue('Title')
-            path = '/' if data.getValue('AtRoot') else data.getValue('ParentId')
+            path = '' if data.getValue('AtRoot') else data.getValue('ParentId')
             path += '/%s' % title
             parameter.Json = '{"title": "%s", "destination": "%s"}' % (title, path)
         elif method == 'getUploadLocation':
