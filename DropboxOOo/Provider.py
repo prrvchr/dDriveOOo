@@ -77,6 +77,41 @@ class Provider(ProviderBase):
             parameter.Method = 'POST'
             parameter.Url = '%s/file_requests/get' % self.BaseUrl
             parameter.Data = '{"id": "%s"}' % data.getValue('Id')
+        elif method == 'getDriveContent':
+            parameter.Method = 'POST'
+            parameter.Url = '%s/files/list_folder' % self.BaseUrl
+            parameter.Json = '{"path": "", "recursive": true, "include_deleted": false}'
+            token = uno.createUnoStruct('com.sun.star.auth.RestRequestToken')
+            token.Type = TOKEN_URL | TOKEN_JSON
+            token.Field = 'cursor'
+            token.Value = '%s/files/list_folder/continue' % self.BaseUrl
+            token.IsConditional = True
+            token.ConditionField = 'has_more'
+            token.ConditionValue = True
+            enumerator = uno.createUnoStruct('com.sun.star.auth.RestRequestEnumerator')
+            enumerator.Field = 'entries'
+            enumerator.Token = token
+            parameter.Enumerator = enumerator
+        elif method == 'getToken':
+            parameter.Method = 'POST'
+            parameter.Url = '%s/files/list_folder/get_latest_cursor' % self.BaseUrl
+            parameter.Json = '{"path": "", "recursive": true, "include_deleted": false}'
+        elif method == 'getChanges':
+            parameter.Method = 'POST'
+            parameter.Url = '%s/files/list_folder/continue' % self.BaseUrl
+            parameter.Json = '{"cursor": "%s"}' % data.getValue('Token')
+            token = uno.createUnoStruct('com.sun.star.auth.RestRequestToken')
+            token.Type = TOKEN_JSON | TOKEN_SYNC
+            token.Field = 'cursor'
+            token.SyncField = ''
+            token.Value = '%s/files/list_folder/continue' % self.BaseUrl
+            token.IsConditional = True
+            token.ConditionField = 'has_more'
+            token.ConditionValue = True
+            enumerator = uno.createUnoStruct('com.sun.star.auth.RestRequestEnumerator')
+            enumerator.Field = 'entries'
+            enumerator.Token = token
+            parameter.Enumerator = enumerator
         elif method == 'getFolderContent':
             parameter.Method = 'POST'
             parameter.Url = '%s/files/list_folder' % self.BaseUrl
@@ -145,12 +180,21 @@ class Provider(ProviderBase):
             parameter.Header = '{"Content-Type": "application/octet-stream"}'
         return parameter
 
+    def initUser(self, request, database, user):
+        data = self.getToken(request, user)
+        if data.IsPresent:
+            token = self.getUserToken(data.Value)
+            if database.updateToken(user.getValue('UserId'), token):
+                user.setValue('Token', token)
+
     def getUserId(self, user):
         return user.getValue('account_id')
     def getUserName(self, user):
         return user.getValue('email')
     def getUserDisplayName(self, user):
         return user.getValue('name').getValue('display_name')
+    def getUserToken(self, data):
+        return data.getValue('cursor')
 
     def getItemParent(self, item, rootid):
         ref = item.getDefaultValue('parentReference', self._getKeyMap())
