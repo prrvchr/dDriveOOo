@@ -78,7 +78,7 @@ class Provider(ProviderBase):
             parameter.Method = 'POST'
             parameter.Url = '%s/file_requests/get' % self.BaseUrl
             parameter.Data = '{"id": "%s"}' % data.getValue('Id')
-        elif method == 'getDriveContent':
+        elif method == 'getFirstPull':
             parameter.Method = 'POST'
             parameter.Url = '%s/files/list_folder' % self.BaseUrl
             parameter.Json = '{"path": "", "recursive": true, "include_deleted": false}'
@@ -97,7 +97,7 @@ class Provider(ProviderBase):
             parameter.Method = 'POST'
             parameter.Url = '%s/files/list_folder/get_latest_cursor' % self.BaseUrl
             parameter.Json = '{"path": "", "recursive": true, "include_deleted": false}'
-        elif method == 'getChanges':
+        elif method == 'getPull':
             parameter.Method = 'POST'
             parameter.Url = '%s/files/list_folder/continue' % self.BaseUrl
             parameter.Json = '{"cursor": "%s"}' % data.getValue('Token')
