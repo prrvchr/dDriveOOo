@@ -4,12 +4,16 @@
 import uno
 import unohelper
 
+from com.sun.star.ucb.ConnectionMode import OFFLINE
+
 from com.sun.star.auth.RestRequestTokenType import TOKEN_NONE
 from com.sun.star.auth.RestRequestTokenType import TOKEN_URL
 from com.sun.star.auth.RestRequestTokenType import TOKEN_REDIRECT
 from com.sun.star.auth.RestRequestTokenType import TOKEN_QUERY
 from com.sun.star.auth.RestRequestTokenType import TOKEN_JSON
 from com.sun.star.auth.RestRequestTokenType import TOKEN_SYNC
+
+from unolib import KeyMap
 
 from dropbox import ProviderBase
 from dropbox import g_identifier
@@ -40,6 +44,7 @@ class Provider(ProviderBase):
         self.Link = ''
         self.Folder = ''
         self.SourceURL = ''
+        self.SessionMode = OFFLINE
         self._Error = ''
         self._folders = []
 
@@ -198,7 +203,7 @@ class Provider(ProviderBase):
         return data.getValue('cursor')
 
     def getItemParent(self, item, rootid):
-        ref = item.getDefaultValue('parentReference', self._getKeyMap())
+        ref = item.getDefaultValue('parentReference', KeyMap())
         parent = ref.getDefaultValue('id', rootid)
         return (parent, )
 
@@ -256,19 +261,19 @@ class Provider(ProviderBase):
         return False
 
     def getResponseId(self, response, default):
-        id = response.getDefaultValue('metadata', self._getKeyMap()).getDefaultValue('id', None)
+        id = response.getDefaultValue('metadata', KeyMap()).getDefaultValue('id', None)
         if id is None:
             id = default
         return id
     def getResponseTitle(self, response, default):
-        title = response.getDefaultValue('metadata', self._getKeyMap()).getDefaultValue('name', None)
+        title = response.getDefaultValue('metadata', KeyMap()).getDefaultValue('name', None)
         if title is None:
             title = default
         return title
 
     def getRoot(self, request, user):
         id = user.getValue('root_info').getValue('root_namespace_id')
-        root = self._getKeyMap()
+        root = KeyMap()
         root.insertValue('id', id)
         root.insertValue('name', 'Homework')
         response = uno.createUnoStruct('com.sun.star.beans.Optional<com.sun.star.auth.XRestKeyMap>')
