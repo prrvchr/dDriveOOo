@@ -56,7 +56,6 @@ class ContentProviderProxy(unohelper.Base,
 
     # XContentProviderFactory
     def createContentProvider(self, service):
-        print('ContentProviderProxy.createContentProvider()')
         provider = None
         level = INFO
         msg = "Service: %s loading ..." % service
@@ -72,7 +71,6 @@ class ContentProviderProxy(unohelper.Base,
 
     # XContentProviderSupplier
     def getContentProvider(self):
-        print('ContentProviderProxy.getContentProvider()')
         level = INFO
         msg = "Need to get UCP: %s ..." % g_identifier
         if not self.IsLoaded:

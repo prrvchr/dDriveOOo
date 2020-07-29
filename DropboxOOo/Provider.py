@@ -119,6 +119,7 @@ class Provider(ProviderBase):
             enumerator.Token = token
             parameter.Enumerator = enumerator
         elif method == 'getFolderContent':
+            print("Provider.getRequestParameter() %s" % ','.join(data.getKeys()))
             parameter.Method = 'POST'
             parameter.Url = '%s/files/list_folder' % self.BaseUrl
             path = '' if data.getValue('IsRoot') else data.getValue('Id')
