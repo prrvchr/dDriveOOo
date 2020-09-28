@@ -1,20 +1,18 @@
-## Terms Of Use for [DropboxOOo](https://github.com/prrvchr/DropboxOOo)
+**Use of this software also subjects you to our [Data Protection Policy](https://prrvchr.github.io/DropboxOOo/DropboxOOo/registration/PrivacyPolicy_en).**
 
+Regarding installation, configuration and use, please consult the [documentation](https://prrvchr.github.io/DropboxOOo).
 
-### Introduction:
+# Terms Of Use
+
+## Introduction:
 
 The DropboxOOo library is a part of a personnal project.
-Full documentation is available [on this page](https://prrvchr.github.io/DropboxOOo).
 
-Use of this software subjects you to our **Data Protection Policy** as described in [this document](https://prrvchr.github.io/DropboxOOo/DropboxOOo/registration/PrivacyPolicy_en).
-
-
-### Responsibilities:
+## Responsibilities:
 
 DropboxOOo is distributed in the hope that it will be useful, but **WITHOUT ANY WARRANTY**; without even the implied warranty of **MERCHANTABILITY** or **FITNESS FOR A PARTICULAR PURPOSE**.
 
-
-### License:
+## License:
 
 DropboxOOo is free software; you can redistribute it and/or modify it under the terms of either (at your option):
 

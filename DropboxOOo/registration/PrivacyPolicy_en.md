@@ -1,26 +1,27 @@
-## Data Protection Policy for [DropboxOOo](https://github.com/prrvchr/DropboxOOo)
+**Use of this software also subjects you to our [Terms Of Use](https://prrvchr.github.io/DropboxOOo/DropboxOOo/registration/TermsOfUse_en).**
 
-### Introduction:
+Regarding installation, configuration and use, please consult the [documentation](https://prrvchr.github.io/DropboxOOo).
+
+# Data Protection Policy
+
+## Introduction:
 
 the privacy of our DropboxOOo software users is very important to us, and we are commited to safeguarding it.
 
 This policy explains what we do with your personal information.
 
 For simplicity, in the rest of this document, will be named:
-- `DropboxOOo`:  the DropboxOOo software in its integrity.
+- `DropboxOOo`:  the DropboxOOo software in its entirety.
 - `User`: the user of the DropboxOOo software.
 - `Supplier`: the internet service provider delivering internet services to `DropboxOOo`.
 
-Use of this software subjects you to our **Terms Of Use** as described in [this document:](https://prrvchr.github.io/DropboxOOo/DropboxOOo/registration/TermsOfUse_en)
-
-### Contact:
+## Contact:
 
 In any case, it is possible to contact the person responsible for data processing at:
 
 prrvchr@gmail.com
 
-
-### Use of your personal data:
+## Use of your personal data:
 
 To work `DropboxOOo` need to keep data locally.
 
@@ -34,8 +35,7 @@ Use of the `Supplier` services through `DropboxOOo`, may submit you to the Data 
 
 `Supplier` is solely responsible for the use of the data it collects as described in its Policy.
 
-
-### Security of your personal information:
+## Security of your personal information:
 
 Since the data collected by `DropboxOOo` is located on the user's computer, only the `User` is responsible for the security of the data collected.
 
@@ -43,8 +43,7 @@ Use of the `Supplier` services via `DropboxOOo` may subject you to the data prot
 
 `Supplier` is solely responsible for the security of the data it collects as described in its Policy.
 
-
-### Expiration of collected data:
+## Expiration of collected data:
 
 Updating the data collected locally is done each time `DropboxOOo` is used.
 
