@@ -1,3 +1,5 @@
+# ![DropboxOOo logo](img/DropboxOOo.png) DropboxOOo
+
 **Ce [document](https://prrvchr.github.io/DropboxOOo/README_fr) en français.**
 
 **The use of this software subjects you to our** [Terms Of Use](https://prrvchr.github.io/DropboxOOo/DropboxOOo/registration/TermsOfUse_en) **and** [Data Protection Policy](https://prrvchr.github.io/DropboxOOo/DropboxOOo/registration/PrivacyPolicy_en)
@@ -36,11 +38,11 @@ OpenOffice and LibreOffice on Windows are not subject to this malfunction.
 It seems important that the file was not renamed when it was downloaded.
 If necessary, rename it before installing it.
 
-- Install [OAuth2OOo.oxt](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt) extension version 0.0.5.
+- Install ![OAuth2OOo logo](https://prrvchr.github.io/OAuth2OOo/img/OAuth2OOo.png) **[OAuth2OOo.oxt](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt)** extension version 0.0.5.
 
 You must first install this extension, if it is not already installed.
 
-- Install [DropboxOOo.oxt](https://github.com/prrvchr/DropboxOOo/raw/master/DropboxOOo.oxt) extension version 0.0.5.
+- Install ![DropboxOOo logo](img/DropboxOOo.png) **[DropboxOOo.oxt](https://github.com/prrvchr/DropboxOOo/raw/master/DropboxOOo.oxt)** extension version 0.0.5.
 
 Restart LibreOffice / OpenOffice after installation.
 

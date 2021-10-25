@@ -30,8 +30,8 @@
         <name lang="en-US">DropboxOOo</name>
     </display-name>
     <icon>
-        <default xlink:href="DropboxOOo/Dropbox.png"/>
-        <high-contrast xlink:href="DropboxOOo/Dropbox.png"/>
+        <default xlink:href="DropboxOOo/DropboxOOo.png"/>
+        <high-contrast xlink:href="DropboxOOo/DropboxOOo.png"/>
     </icon>
     <extension-description>
         <src xlink:href="description/desc_en.txt" lang="en-US"/>

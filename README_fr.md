@@ -1,3 +1,5 @@
+# ![DropboxOOo logo](img/DropboxOOo.png) DropboxOOo
+
 **This [document](https://prrvchr.github.io/DropboxOOo) in English.**
 
 **L'utilisation de ce logiciel vous soumet à nos [Conditions d'utilisation](https://prrvchr.github.io/DropboxOOo/DropboxOOo/registration/TermsOfUse_fr) et à notre [Politique de protection des données](https://prrvchr.github.io/DropboxOOo/DropboxOOo/registration/PrivacyPolicy_fr).**
@@ -36,11 +38,11 @@ OpenOffice et LibreOffice sous Windows ne sont pas soumis à ce dysfonctionnemen
 Il semble important que le fichier n'ait pas été renommé lors de son téléchargement.  
 Si nécessaire, renommez-le avant de l'installer.
 
-- Installer l'extension [OAuth2OOo.oxt](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt) version 0.0.5.
+- Installer l'extension ![OAuth2OOo logo](https://prrvchr.github.io/OAuth2OOo/img/OAuth2OOo.png) **[OAuth2OOo.oxt](https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt)** version 0.0.5.
 
 Vous devez d'abord installer cette extension, si elle n'est pas déjà installée.
 
-- Installer l'extension [DropboxOOo.oxt](https://github.com/prrvchr/DropboxOOo/raw/master/DropboxOOo.oxt) version 0.0.5.
+- Installer l'extension ![DropboxOOo logo](img/DropboxOOo.png) **[DropboxOOo.oxt](https://github.com/prrvchr/DropboxOOo/raw/master/DropboxOOo.oxt)** version 0.0.5.
 
 Redémarrez LibreOffice / OpenOffice après l'installation.
 

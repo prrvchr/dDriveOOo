@@ -1,8 +1,8 @@
+# ![DropboxOOo logo](https://prrvchr.github.io/DropboxOOo/img/DropboxOOo.png) DropboxOOo - Data Protection Policy
+
 **Use of this software also subjects you to our [Terms Of Use](https://prrvchr.github.io/DropboxOOo/DropboxOOo/registration/TermsOfUse_en).**
 
 Regarding installation, configuration and use, please consult the [documentation](https://prrvchr.github.io/DropboxOOo).
-
-# Data Protection Policy
 
 ## Introduction:
 
