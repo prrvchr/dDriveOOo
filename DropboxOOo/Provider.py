@@ -82,7 +82,8 @@ class Provider(ProviderBase):
         elif method == 'getItem':
             parameter.Method = 'POST'
             parameter.Url = '%s/file_requests/get' % self.BaseUrl
-            parameter.Data = '{"id": "%s"}' % data.getValue('Id')
+            #parameter.Data = '{"id": "%s"}' % data.getValue('Id')
+            parameter.Json = '{"id": "%s"}' % data.getValue('Id')
         elif method == 'getFirstPull':
             parameter.Method = 'POST'
             parameter.Url = '%s/files/list_folder' % self.BaseUrl
