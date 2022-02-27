@@ -42,6 +42,10 @@ Si nécessaire, renommez-le avant de l'installer.
 
 Vous devez d'abord installer cette extension, si elle n'est pas déjà installée.
 
+- Installer l'extension ![HsqlDBDriverOOo logo](https://prrvchr.github.io/HsqlDBDriverOOo/img/HsqlDBDriverOOo.png) **[HsqlDBDriverOOo.oxt](https://github.com/prrvchr/HsqlDBDriverOOo/raw/master/HsqlDBDriverOOo.oxt)** version 0.0.4.
+
+Vous devez installer cette extension, si elle n'est pas déjà installée.
+
 - Installer l'extension ![DropboxOOo logo](img/DropboxOOo.png) **[DropboxOOo.oxt](https://github.com/prrvchr/DropboxOOo/raw/master/DropboxOOo.oxt)** version 0.0.5.
 
 Redémarrez LibreOffice / OpenOffice après l'installation.
