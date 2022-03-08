@@ -69,6 +69,7 @@ try:
     from .unotool import getFileSequence
     from .unotool import getStringResource
     from .unotool import getResourceLocation
+    from .unotool import getProperty
     from .unotool import getConfiguration
     from .unotool import getDialog
 
