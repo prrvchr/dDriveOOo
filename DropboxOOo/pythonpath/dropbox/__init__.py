@@ -63,6 +63,7 @@ try:
     from .dbtool import getSequenceFromResult
 
     from .unolib import KeyMap
+    from .unolib import PropertySet
 
     from .unotool import createService
     from .unotool import getFileSequence
