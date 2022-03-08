@@ -13,9 +13,9 @@ from com.sun.star.auth.RestRequestTokenType import TOKEN_QUERY
 from com.sun.star.auth.RestRequestTokenType import TOKEN_JSON
 from com.sun.star.auth.RestRequestTokenType import TOKEN_SYNC
 
-from unolib import KeyMap
-
+from dropbox import KeyMap
 from dropbox import ProviderBase
+
 from dropbox import g_identifier
 from dropbox import g_provider
 from dropbox import g_host

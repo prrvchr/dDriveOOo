@@ -10,12 +10,12 @@ from com.sun.star.awt import XDialogEventHandler
 from com.sun.star.logging.LogLevel import INFO
 from com.sun.star.logging.LogLevel import SEVERE
 
-from unolib import createService
-from unolib import getFileSequence
-from unolib import getStringResource
-from unolib import getResourceLocation
-from unolib import getConfiguration
-from unolib import getDialog
+from dropbox import createService
+from dropbox import getFileSequence
+from dropbox import getStringResource
+from dropbox import getResourceLocation
+from dropbox import getConfiguration
+from dropbox import getDialog
 
 from dropbox import getLoggerUrl
 from dropbox import getLoggerSetting
