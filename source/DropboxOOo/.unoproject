@@ -1,0 +1,10 @@
+#UNO project configuration file
+#Thu May 05 17:49:31 EDT 2022
+project.prefix=io.github.prrvchr
+project.language=Python
+project.ooo=LibreOffice 7.3
+project.idl=/idl
+project.implementation=DropboxOOo
+project.build=build
+project.sdk=7.3.2.2
+project.srcdir=/source
