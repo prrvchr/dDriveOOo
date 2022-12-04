@@ -29,22 +29,22 @@
                 <value>3aphs14urpklkit</value>
             </prop>
             <prop oor:name="ClientSecret">
-                <value>5v11s3m6p0djl17</value>
+                <value></value>
             </prop>
             <prop oor:name="AuthorizationUrl">
                 <value>https://www.dropbox.com/oauth2/authorize</value>
             </prop>
             <prop oor:name="AuthorizationParameters">
-                <value>{"locale": "current_language"}</value>
+                <value>{"locale": "current_language", "token_access_type": "offline"}</value>
             </prop>
             <prop oor:name="TokenUrl">
                 <value>https://api.dropboxapi.com/oauth2/token</value>
             </prop>
             <prop oor:name="TokenParameters">
-                <value>{"client_secret": null}</value>
+                <value>{}</value>
             </prop>
             <prop oor:name="CodeChallenge">
-                <value>false</value>
+                <value>true</value>
             </prop>
             <prop oor:name="CodeChallengeMethod">
                 <value>S256</value>
