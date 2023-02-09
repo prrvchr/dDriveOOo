@@ -28,9 +28,9 @@
 """
 
 # Provider configuration
-g_scheme = 'vnd.dropbox-apps'
+g_scheme = 'vnd-dropbox'
 g_extension = 'DropboxOOo'
-g_identifier = 'com.gmail.prrvchr.extensions.%s' % g_extension
+g_identifier = 'io.github.prrvchr.%s' % g_extension
 g_logger = '%s.Logger' % g_identifier
 
 g_provider = 'Dropbox'

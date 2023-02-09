@@ -13,13 +13,13 @@
                     <node oor:name="ProviderData">
                         <node oor:name="Provider68" oor:op="fuse">
                             <prop oor:name="ServiceName">
-                                <value>com.gmail.prrvchr.extensions.DropboxOOo.ContentProviderProxy</value>
+                                <value>io.github.prrvchr.DropboxOOo.ContentProviderProxy</value>
                             </prop>
                             <prop oor:name="URLTemplate">
-                                <value>vnd.dropbox-apps</value>
+                                <value>vnd-dropbox</value>
                             </prop>
                             <prop oor:name="Arguments">
-                                <value>com.gmail.prrvchr.extensions.DropboxOOo</value>
+                                <value>io.github.prrvchr.DropboxOOo</value>
                             </prop>
                         </node>
                     </node>
