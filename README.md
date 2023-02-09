@@ -50,7 +50,7 @@ DropboxOOo uses a local [HsqlDB][11] database version 2.5.1.
 HsqlDB being a database written in Java, its use requires the [installation and configuration][12] in LibreOffice / OpenOffice of a **JRE version 11 or later**.  
 I recommend [Adoptium][13] as your Java installation source.
 
-If you are using **LibreOffice on Linux**, then you are subject to [bug 139538][14](https://bugs.documentfoundation.org/show_bug.cgi?id=139538).  
+If you are using **LibreOffice on Linux**, then you are subject to [bug 139538][14].  
 To work around the problem, please uninstall the packages:
 - libreoffice-sdbc-hsqldb
 - libhsqldb1.8.0-java
@@ -158,7 +158,7 @@ Although this functionality is only needed for gDriveOOo, it is implemented glob
 
 ### What remains to be done for version 0.0.6:
 
-- Write the implementation Pull Change in the new [Replicator interface][22](https://github.com/prrvchr/DropboxOOo/blob/master/uno/lib/uno/ucb/replicator.py)
+- Write the implementation Pull Change in the new [Replicator interface][22].
 
 - Add new language for internationalization...
 
