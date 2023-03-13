@@ -27,7 +27,7 @@
                         <value>%origin%/DropboxOOo/OptionsDialog.xdl</value>
                     </prop>
                     <prop oor:name="EventHandlerService">
-                        <value>io.github.prrvchr.DropboxOOo.OptionsDialog</value>
+                        <value>io.github.prrvchr.DropboxOOo.OptionsHandler</value>
                     </prop>
                 </node>
             </node>

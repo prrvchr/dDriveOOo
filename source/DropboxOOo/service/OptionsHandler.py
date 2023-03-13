@@ -27,40 +27,66 @@
 ╚════════════════════════════════════════════════════════════════════════════════════╝
 """
 
-# Provider configuration
-g_scheme = 'vnd-dropbox'
-g_extension = 'DropboxOOo'
-g_identifier = 'io.github.prrvchr.%s' % g_extension
+import uno
+import unohelper
 
-g_provider = 'Dropbox'
-g_host = 'api.dropboxapi.com'
-g_version = '2'
-g_url = 'https://%s/%s' % (g_host, g_version)
-g_upload = 'https://content.dropboxapi.com/2'
+from com.sun.star.lang import XServiceInfo
 
-g_userfields = 'id,userPrincipalName,displayName'
-g_drivefields = 'id,createdDateTime,lastModifiedDateTime,name'
-g_itemfields = '%s,file,size,parentReference' % g_drivefields
+from com.sun.star.awt import XContainerWindowEventHandler
 
-# Minimun chunk: 327680 (320Ko) no more uploads if less... (must be a multiple of 64Ko (and 32Ko))
-g_chunk = 327680  # Http request maximum data size, must be a multiple of 'g_length'
-g_buffer = 32768  # InputStream (Downloader) maximum 'Buffers' size
-g_pages = 100
+from dropbox import OptionsManager
 
-g_office = 'application/vnd.oasis.opendocument'
-g_folder = 'application/vnd.dropbox-apps.folder'
-g_link = 'application/vnd.dropbox-apps.link'
-g_doc_map = {'application/vnd.microsoft-apps.document':     'application/vnd.oasis.opendocument.text',
-             'application/vnd.microsoft-apps.spreadsheet':  'application/x-vnd.oasis.opendocument.spreadsheet',
-             'application/vnd.microsoft-apps.presentation': 'application/vnd.oasis.opendocument.presentation',
-             'application/vnd.microsoft-apps.drawing':      'application/pdf'}
+from dropbox import g_identifier
 
-g_cache = 20
-g_admin = False
+import traceback
 
-# Resource strings files folder
-g_resource = 'resource'
-g_basename = 'contentprovider'
-g_driverlog = 'DriverLogger'
-g_synclog = 'SyncLogger'
-g_errorlog = 'gDriveError'
+# pythonloader looks for a static g_ImplementationHelper variable
+g_ImplementationHelper = unohelper.ImplementationHelper()
+g_ImplementationName = '%s.OptionsHandler' % g_identifier
+
+
+class OptionsHandler(unohelper.Base,
+                     XServiceInfo,
+                     XContainerWindowEventHandler):
+    def __init__(self, ctx):
+        self._ctx = ctx
+        self._manager = None
+
+    # XContainerWindowEventHandler
+    def callHandlerMethod(self, window, event, method):
+        try:
+            handled = False
+            if method == 'external_event':
+                if event == 'initialize':
+                    self._manager = OptionsManager(self._ctx, window)
+                    handled = True
+                elif event == 'ok':
+                    self._manager.saveSetting()
+                    handled = True
+                elif event == 'back':
+                    self._manager.loadSetting()
+                    handled = True
+            elif method == 'ViewData':
+                self._manager.viewData()
+                handled = True
+            return handled
+        except Exception as e:
+            msg = "OptionsHandler.callHandlerMethod() Error: %s" % traceback.print_exc()
+            print(msg)
+
+    def getSupportedMethodNames(self):
+        return ('external_event',
+                'ViewData')
+
+    # XServiceInfo
+    def supportsService(self, service):
+        return g_ImplementationHelper.supportsService(g_ImplementationName, service)
+    def getImplementationName(self):
+        return g_ImplementationName
+    def getSupportedServiceNames(self):
+        return g_ImplementationHelper.getSupportedServiceNames(g_ImplementationName)
+
+
+g_ImplementationHelper.addImplementation(OptionsHandler,                            # UNO object class
+                                         g_ImplementationName,                      # Implementation name
+                                        (g_ImplementationName,))                    # List of implemented services
