@@ -50,7 +50,7 @@ from dropbox import getLogger
 from dropbox import g_scheme
 from dropbox import g_identifier
 from dropbox import g_basename
-from dropbox import g_driverlog
+from dropbox import g_defaultlog
 
 g_proxy = 'com.sun.star.ucb.ContentProviderProxy'
 
@@ -80,7 +80,7 @@ class ContentProviderProxy(unohelper.Base,
         self.plugin = ''
         self.replace = True
         msg += " Done"
-        self._logger = getLogger(ctx, g_driverlog, g_basename)
+        self._logger = getLogger(ctx, g_defaultlog, g_basename)
         self._logger.logp(INFO, 'ContentProviderProxy', '__init__()', msg)
 
     # XContentProviderFactory

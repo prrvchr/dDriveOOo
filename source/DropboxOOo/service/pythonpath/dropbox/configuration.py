@@ -62,7 +62,7 @@ g_admin = False
 g_resource = 'resource'
 # Logging required global variable
 g_basename = 'contentprovider'
-g_dedaultlog = 'DropboxLogger'
+g_defaultlog = 'DropboxLogger'
 g_errorlog = 'DropboxError'
 # Logging global variable
 g_synclog = 'SyncLogger'
