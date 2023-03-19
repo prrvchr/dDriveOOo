@@ -46,6 +46,8 @@ from .options import OptionsManager
 
 from .logger import getLogger
 
+from .dbtool import toUnoDateTime
+
 from .configuration import g_provider
 from .configuration import g_scheme
 from .configuration import g_extension

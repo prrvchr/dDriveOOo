@@ -42,6 +42,8 @@ from com.sun.star.auth.RestRequestTokenType import TOKEN_SYNC
 from dropbox import KeyMap
 from dropbox import ProviderBase
 
+from dropbox import toUnoDateTime
+
 from dropbox import g_identifier
 from dropbox import g_provider
 from dropbox import g_host
@@ -266,12 +268,12 @@ class Provider(ProviderBase):
         created = item.getDefaultValue('server_modified', None)
         if created:
             return self.parseDateTime(created, '%Y-%m-%dT%H:%M:%SZ')
-        return timestamp
+        return toUnoDateTime(timestamp)
     def getItemModified(self, item, timestamp=None):
         modified = item.getDefaultValue('client_modified', None)
         if modified:
             return self.parseDateTime(modified, '%Y-%m-%dT%H:%M:%SZ')
-        return timestamp
+        return toUnoDateTime(timestamp)
     def getItemMediaType(self, item):
         tag = item.getDefaultValue('.tag', 'folder')
         return 'application/octet-stream' if tag != 'folder' else self.Folder
