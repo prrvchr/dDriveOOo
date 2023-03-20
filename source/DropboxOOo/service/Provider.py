@@ -242,9 +242,9 @@ class Provider(ProviderBase):
     def getRootTitle(self, item):
         return self.getItemTitle(item)
     def getRootCreated(self, item, timestamp=None):
-        return timestamp
+        return toUnoDateTime(timestamp)
     def getRootModified(self, item, timestamp=None):
-        return timestamp
+        return toUnoDateTime(timestamp)
     def getRootMediaType(self, item):
         return self.Folder
     def getRootSize(self, item):
