@@ -51,6 +51,7 @@ from .configuration import g_defaultlog
 
 import traceback
 from threading import Event
+from threading import Lock
 
 
 class ContentProvider(unohelper.Base,
@@ -63,9 +64,9 @@ class ContentProvider(unohelper.Base,
         self.Scheme = ''
         self.Plugin = plugin
         self.DataSource = None
-        self.event = Event()
+        self._sync = Event()
+        self._lock = Lock()
         self._error = ''
-        self._factory = createService(ctx, 'com.sun.star.uri.UriReferenceFactory')
         self._transformer = createService(ctx, 'com.sun.star.util.URLTransformer')
         self._logger = getLogger(ctx)
         self._logger.logprb(INFO, 'ContentProvider', '__init__()', 101, self.Plugin)
@@ -76,7 +77,7 @@ class ContentProvider(unohelper.Base,
     # XParameterizedContentProvider
     def registerInstance(self, scheme, plugin, replace):
         self._logger.logprb(INFO, 'ContentProvider', 'registerInstance()', 111, scheme, plugin)
-        datasource = DataSource(self._ctx, self.event, scheme, plugin)
+        datasource = DataSource(self._ctx, self._sync, self._lock, scheme, plugin)
         if not datasource.isValid():
             self._logger.logp(SEVERE, 'ContentProvider', 'registerInstance()', datasource.Error)
             return None
@@ -93,7 +94,7 @@ class ContentProvider(unohelper.Base,
         print("ContentProvider.createContentIdentifier() 1")
         # FIXME: We are forced to perform lazy loading on Identifier (and User) in order to be able
         # FIXME: to trigger an exception when delivering the content ie: XContentProvider.queryContent().
-        identifier = self.DataSource.getIdentifier(self._factory, self._getContentIdentifier(url))
+        identifier = self.DataSource.getIdentifier(self._getContentIdentifier(url))
         self._logger.logprb(INFO, 'ContentProvider', 'createContentIdentifier()', 131, url)
         print("ContentProvider.createContentIdentifier() 2")
         return identifier
@@ -104,10 +105,7 @@ class ContentProvider(unohelper.Base,
             print("ContentProvider.queryContent() 1")
             # FIXME: We are forced to perform lazy loading on Identifier (and User) in order to be able
             # FIXME: to trigger an exception when delivering the content ie: XContentProvider.queryContent().
-            #if not identifier.isInitialized():
-            #    identifier.initialize(self.DataSource.DataBase)
-            #self._user = identifier.User.Name
-            content = identifier.getContent(self.DataSource)
+            content = identifier.queryContent(self.DataSource)
             self._logger.logprb(INFO, 'ContentProvider', 'queryContent()', 141, identifier.getContentIdentifier())
             print("ContentProvider.queryContent() 2")
             return content

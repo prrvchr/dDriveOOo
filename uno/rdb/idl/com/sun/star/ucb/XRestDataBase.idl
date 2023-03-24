@@ -79,22 +79,16 @@ interface XRestDataBase: com::sun::star::uno::XInterface
     void updateUserTimeStamp([in] ::io::github::prrvchr::css::util::DateTimeWithTimezone TimeStamp,
                              [in] any UserId);
 
-
     ::com::sun::star::auth::XRestKeyMap getItem([in] string UserId,
                                                 [in] string ItemId,
-                                                [in] any ParentId);
-    void insertNewContent([in] string UserId,
-                          [in] string ItemId,
-                          [in] string ParentId,
-                          [in] ::com::sun::star::auth::XRestKeyMap Content);
-    long countChildTitle([in] string UserId,
-                         [in] string ParentId,
-                         [in] string Title);
+                                                [in] boolean IsRoot);
+    boolean hasTitle([in] string UserId,
+                     [in] string ParentId,
+                     [in] string Title);
     string getChildId([in] string UserId,
                       [in] string ParentId,
                       [in] string Title);
     void updateItemId([in] ::com::sun::star::uno::XInterface Provider,
-                      [in] string UserName,
                       [in] string ItemId,
                       [in] ::com::sun::star::auth::XRestKeyMap Response);
     ::com::sun::star::sdbc::XPreparedStatement getFirstPullCall([in] string UserId,

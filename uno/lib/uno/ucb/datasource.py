@@ -68,14 +68,16 @@ import traceback
 class DataSource(unohelper.Base,
                  XRestDataSource,
                  XCloseListener):
-    def __init__(self, ctx, event, scheme, plugin):
+    def __init__(self, ctx, sync, lock, scheme, plugin):
         msg = "DataSource for Scheme: %s loading ... " % scheme
         print("DataSource.__init__() 1")
         self._ctx = ctx
         self._default = None
         self._users = {}
         self.Error = None
-        self._sync = event
+        self._sync = sync
+        self._lock = lock
+        self._factory = createService(ctx, 'com.sun.star.uri.UriReferenceFactory')
         self.Provider = createService(self._ctx, '%s.Provider' % plugin)
         datasource, url, created = self._getDataSource(scheme, plugin, True)
         self.DataBase = DataBase(self._ctx, datasource)
@@ -88,7 +90,7 @@ class DataSource(unohelper.Base,
         self.DataBase.addCloseListener(self)
         folder, link = self.DataBase.getContentType()
         self.Provider.initialize(scheme, plugin, folder, link)
-        self.Replicator = Replicator(ctx, datasource, self.Provider, self._users, self._sync)
+        self.Replicator = Replicator(ctx, datasource, self.Provider, self._users, self._sync, self._lock)
         msg += "Done"
         self._logger = getLogger(ctx)
         self._logger.logp(INFO, 'DataSource', '__init__()', msg)
@@ -111,18 +113,14 @@ class DataSource(unohelper.Base,
     def isValid(self):
         return self.Error is None
 
-    def getIdentifier(self, factory, url):
+    def getIdentifier(self, url):
         try:
             print("DataSource.getIdentifier() 1 Url: %s" % url)
-            #if user is not None:
-            #    url = '%s://%s%s' % (uri.getScheme(), name, uri.getPath())
-            #    print("DataSource.getIdentifier() 2 Url: %s" % url)
-            #    identifier = user.getIdentifier(factory, url)
-            #else:
-            #    identifier = Identifier(self._ctx, factory, user, url)
-            uri = factory.parse(url)
+            uri = self._factory.parse(url)
+            msg = None
             if uri is None:
                 name = None
+                url = None
             elif uri.hasAuthority() and uri.getAuthority() != '':
                 name = uri.getAuthority()
             elif self._default is not None:
@@ -134,8 +132,8 @@ class DataSource(unohelper.Base,
             if name in self._users:
                 user = self._users[name]
             else:
-                user = User(self._ctx, self, name, self._sync)
-            return user.getIdentifier(factory, uri, url)
+                user = User(self._ctx, self, name, self._sync, self._lock)
+            return user.getIdentifier(url)
         except Exception as e:
             msg = "DataSource.getIdentifier() Error: %s" % traceback.print_exc()
             print(msg)

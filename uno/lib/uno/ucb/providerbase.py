@@ -111,6 +111,9 @@ class ProviderBase(ProviderObject,
     @property
     def FolderSyncModes(self):
         return (SYNC_FOLDER, )
+    @property
+    def SupportDuplicate(self):
+        return False
 
     # Must be implemented method
     def getRequestParameter(self, method, data):
@@ -280,5 +283,10 @@ class ProviderBase(ProviderObject,
 
     def updateTrashed(self, request, item):
         parameter = self.getRequestParameter('updateTrashed', item)
+        response = request.execute(parameter)
+        return response.IsPresent
+
+    def updateParents(self, request, item):
+        parameter = self.getRequestParameter('updateParents', item)
         response = request.execute(parameter)
         return response.IsPresent

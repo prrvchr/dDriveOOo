@@ -125,6 +125,7 @@ class DataBase(unohelper.Base,
         result = select.executeQuery()
         if result.next():
             user = getKeyMapFromResult(result)
+        result.close()
         select.close()
         return user
 
@@ -158,24 +159,34 @@ class DataBase(unohelper.Base,
         if result.next():
             folder = result.getString(1)
             link = result.getString(2)
+        result.close()
         call.close()
         return folder, link
 
 # Procedures called by the Identifier
-    def getItem(self, userid, itemid, parentid):
+    def getMetaData(self, user, item):
+        rootid = user.RootId
+        itemid = item.getValue('ItemId')
+        metadata = self.getItem(user.Id, itemid, rootid == itemid, False)
+        atroot = metadata.getValue('ParentId') == rootid
+        metadata.insertValue('AtRoot', atroot)
+        return metadata
+    
+        #TODO: Can't have a simple SELECT ResultSet with a Procedure,
+    def getItem(self, userid, itemid, isroot, rewite=True):
         #TODO: Can't have a simple SELECT ResultSet with a Procedure,
         #TODO: the malfunction is rather bizard: it always returns the same result
-        #TODO: as a workaround we use a simple quey...
+        #TODO: as a workaround we use a simple query...
         item = None
-        call = 'getRoot' if parentid is None else 'getItem'
+        call = 'getRoot' if isroot else 'getItem'
         select = self._getCall(call)
-        select.setString(1, userid)
-        select.setString(2, itemid)
-        if parentid is not None:
-            select.setString(3, parentid)
+        select.setString(1, userid if isroot else itemid)
+        if not isroot:
+             select.setBoolean(2, rewite)
         result = select.executeQuery()
         if result.next():
             item = getKeyMapFromResult(result)
+        result.close()
         select.close()
         return item
 
@@ -198,7 +209,7 @@ class DataBase(unohelper.Base,
         call.close()
         return all(rows)
 
-    def getChildren(self, userid, itemid, url, mode):
+    def getChildren(self, itemid, mode):
         #TODO: Can't have a ResultSet of type SCROLL_INSENSITIVE with a Procedure,
         #TODO: as a workaround we use a simple quey...
         select = self._getCall('getChildren')
@@ -209,10 +220,8 @@ class DataBase(unohelper.Base,
         #    'IsVolume', 'IsRemote', 'IsRemoveable', 'IsFloppy', 'IsCompactDisc']
         # "TargetURL" is done by:
         #    CONCAT(identifier.getContentIdentifier(), Uri) for File and Foder
-        select.setString(1, url)
-        select.setString(2, userid)
-        select.setString(3, itemid)
-        select.setShort(4, mode)
+        select.setString(1, itemid)
+        select.setShort(2, mode)
         return select
 
     def updateLoaded(self, userid, itemid, value, default):
@@ -223,22 +232,17 @@ class DataBase(unohelper.Base,
         update.close()
         return value
 
-    def getIdentifier(self, userid, rootid, uripath):
+    def getIdentifier(self, uri, rootid):
         call = self._getCall('getIdentifier')
-        call.setString(1, userid)
+        call.setString(1, uri)
         call.setString(2, rootid)
-        call.setString(3, uripath)
-        call.setString(4, '/')
         call.execute()
-        itemid = call.getString(5)
+        itemid = call.getString(3)
         if call.wasNull():
             itemid = None
-        parentid = call.getString(6)
-        if call.wasNull():
-            parentid = None
-        path = call.getString(7)
+        isroot = call.getBoolean(4)
         call.close()
-        return itemid, parentid, path
+        return itemid, isroot
 
     def getNewIdentifier(self, userid):
         identifier = ''
@@ -247,6 +251,7 @@ class DataBase(unohelper.Base,
         result = select.executeQuery()
         if result.next():
             identifier = result.getString(1)
+        result.close()
         select.close()
         return identifier
 
@@ -302,6 +307,16 @@ class DataBase(unohelper.Base,
             # Start Replicator for pushing changes…
             self._sync.set()
 
+    def getNewTitle(self, title, parentid, isfolder):
+        call = self._getCall('getNewTitle')
+        call.setString(1, title)
+        call.setString(2, parentid)
+        call.setBoolean(3, isfolder)
+        call.execute()
+        newtitle = call.getString(4)
+        call.close()
+        return newtitle
+
     def insertNewContent(self, userid, itemid, parentid, content, timestamp):
         call = self._getCall('insertItem')
         call.setString(1, userid)
@@ -319,24 +334,27 @@ class DataBase(unohelper.Base,
         call.setBoolean(13, content.getValue('IsReadOnly'))
         call.setBoolean(14, content.getValue('IsVersionable'))
         call.setString(15, parentid)
-        result = call.execute() == 0
+        status = call.execute() == 0
+        path = call.getString(16)
+        basename = call.getString(17)
         call.close()
-        if result:
+        if status:
             # Start Replicator for pushing changes…
             self._sync.set()
-        return result
+        return path, basename
 
-    def countChildTitle(self, userid, parentid, title):
-        count = 1
-        call = self._getCall('countChildTitle')
+    def hasTitle(self, userid, parentid, title):
+        has = True
+        call = self._getCall('hasTitle')
         call.setString(1, userid)
         call.setString(2, parentid)
         call.setString(3, title)
         result = call.executeQuery()
         if result.next():
-            count = result.getLong(1)
+            has = result.getBoolean(1)
+        result.close()
         call.close()
-        return count
+        return has
 
     def getChildId(self, userid, parentid, title):
         id = None
@@ -347,10 +365,19 @@ class DataBase(unohelper.Base,
         result = call.executeQuery()
         if result.next():
             id = result.getString(1)
+        result.close()
         call.close()
         return id
 
 # Procedures called by the Replicator
+    # Get the datetime of the oldest replication
+    def getUserTimeStamp(self, userid):
+        call = self._getCall('getUserTimeStamp')
+        call.execute()
+        timestamp = call.getObject(1, None)
+        call.close()
+        return timestamp
+
     # Synchronization pull token update procedure
     def updateToken(self, userid, token):
         update = self._getCall('updateToken')
@@ -368,6 +395,7 @@ class DataBase(unohelper.Base,
         result = call.executeQuery()
         if result.next():
             count = result.getLong(1)
+        result.close()
         call.close()
         return count
 
@@ -410,32 +438,51 @@ class DataBase(unohelper.Base,
         update.executeUpdate()
         update.close()
 
-    def getUserTimeStamp(self, userid):
-        select = self._getCall('getUserTimeStamp')
-        select.setString(1, userid)
-        result = select.executeQuery()
-        if result.next():
-            timestamp = result.getObject(1, None)
-        select.close()
-        return timestamp
-
     def setSession(self, user=g_dba):
         query = getSqlQuery(self._ctx, 'setSession', user)
         self._statement.execute(query)
 
     # Procedure to retrieve all the UPDATE AND INSERT in the 'Capabilities' table
-    def getPushItems(self, start, end):
+    def getPushItems(self, userid, start, end):
         items = []
-        select = self._getCall('getSyncItems')
-        select.setObject(1, start)
-        select.setObject(2, end)
+        select = self._getCall('getPushItems')
+        select.setString(1, userid)
+        select.setObject(2, start)
+        select.setObject(3, end)
         result = select.executeQuery()
         while result.next():
             items.append(getKeyMapFromResult(result))
+        result.close()
         select.close()
         return items
 
-    def updateItemId(self, provider, user, uri, itemid, response):
+    def getPushProperties(self, userid, itemid, start, end):
+        properties = None
+        select = self._getCall('getPushProperties')
+        select.setString(1, userid)
+        select.setString(2, itemid)
+        select.setObject(3, start)
+        select.setObject(4, end)
+        result = select.executeQuery()
+        if result.next():
+            properties = getKeyMapFromResult(result)
+        result.close()
+        select.close()
+        return properties
+
+    def getItemParentIds(self, itemid, metadata, start, end):
+        call = self._getCall('getItemParentIds')
+        call.setString(1, itemid)
+        call.setObject(2, start)
+        call.setObject(3, end)
+        call.execute()
+        old = call.getArray(4)
+        new = call.getArray(5)
+        call.close()
+        metadata.insertValue('ParentToAdd', set(new) - set(old))
+        metadata.insertValue('ParentToRemove', set(old) - set(new))
+
+    def updateItemId(self, provider, itemid, response):
         newid = provider.getResponseId(response, itemid)
         if newid != itemid:
             update = self._getCall('updateItemId')
@@ -445,8 +492,6 @@ class DataBase(unohelper.Base,
             msg = "execute UPDATE Items - Old ItemId: %s - New ItemId: %s - RowCount: %s" % (itemid, newid, row)
             getLogger(self._ctx).logp(INFO, "DataBase", "updateItemId", msg)
             update.close()
-            # The Id of the item have been changed, we need to clear the Identifier from the cache
-            user.clearIdentifier(uri)
 
 # Procedures called internally
     def _mergeItem(self, call, provider, item, id, parents, timestamp):
@@ -465,11 +510,6 @@ class DataBase(unohelper.Base,
         return 1
 
     def _mergeRoot(self, provider, userid, rootid, rootname, root, timestamp):
-        print("DataBase._mergeRoot() 1: %s " % ((userid, rootid, rootname, root), ))
-        created = provider.getRootCreated(root, timestamp)
-        modified = provider.getRootModified(root, timestamp)
-        print("DataBase._mergeRoot() 2")
-        print("DataBase._mergeRoot() 3: %s " % ((userid, rootid, rootname, root), ))
         call = self._getCall('mergeItem')
         call.setString(1, userid)
         call.setLong(2, 0)
