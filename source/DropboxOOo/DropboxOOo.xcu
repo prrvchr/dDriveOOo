@@ -11,15 +11,59 @@
             <node oor:name="SecondaryKeys">
                 <node oor:name="Office">
                     <node oor:name="ProviderData">
-                        <node oor:name="Provider68" oor:op="fuse">
+                        <node oor:name="ProviderDropbox1" oor:op="fuse">
                             <prop oor:name="ServiceName">
-                                <value>io.github.prrvchr.DropboxOOo.ContentProviderProxy</value>
+                                <value>io.github.prrvchr.DropboxOOo.ContentProvider</value>
                             </prop>
                             <prop oor:name="URLTemplate">
-                                <value>vnd-dropbox</value>
+                                <value>"vnd-dropbox://"[^/?#]+"@outlook.com"([/?#].*)?</value>
                             </prop>
                             <prop oor:name="Arguments">
-                                <value>io.github.prrvchr.DropboxOOo</value>
+                                <value>WithAuthority</value>
+                            </prop>
+                        </node>
+                        <node oor:name="ProviderDropbox2" oor:op="fuse">
+                            <prop oor:name="ServiceName">
+                                <value>io.github.prrvchr.DropboxOOo.ContentProvider</value>
+                            </prop>
+                            <prop oor:name="URLTemplate">
+                                <value>"vnd-dropbox://"[^/?#]+"@outlook.fr"([/?#].*)?</value>
+                            </prop>
+                            <prop oor:name="Arguments">
+                                <value>WithAuthority</value>
+                            </prop>
+                        </node>
+                        <node oor:name="ProviderDropbox3" oor:op="fuse">
+                            <prop oor:name="ServiceName">
+                                <value>io.github.prrvchr.DropboxOOo.ContentProvider</value>
+                            </prop>
+                            <prop oor:name="URLTemplate">
+                                <value>"vnd-dropbox://"[^/?#]+"@hotmail.com"([/?#].*)?</value>
+                            </prop>
+                            <prop oor:name="Arguments">
+                                <value>WithAuthority</value>
+                            </prop>
+                        </node>
+                        <node oor:name="ProviderDropbox4" oor:op="fuse">
+                            <prop oor:name="ServiceName">
+                                <value>io.github.prrvchr.DropboxOOo.ContentProvider</value>
+                            </prop>
+                            <prop oor:name="URLTemplate">
+                                <value>"vnd-dropbox://"[^/?#]+"@gmail.com"([/?#].*)?</value>
+                            </prop>
+                            <prop oor:name="Arguments">
+                                <value>WithAuthority</value>
+                            </prop>
+                        </node>
+                        <node oor:name="ProviderDropbox10" oor:op="fuse">
+                            <prop oor:name="ServiceName">
+                                <value>io.github.prrvchr.DropboxOOo.ContentProvider</value>
+                            </prop>
+                            <prop oor:name="URLTemplate">
+                                <value>"vnd-dropbox://"([/?#].*)?</value>
+                            </prop>
+                            <prop oor:name="Arguments">
+                                <value>WithOutAuthority</value>
                             </prop>
                         </node>
                     </node>
