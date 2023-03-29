@@ -97,13 +97,25 @@ Editer ou changer "true" par "false" (réglez-le sur "false")
 
 Dans: Fichier - Ouvrir - Nom de fichier saisir:
 
+- **vnd-dropbox://votre_adresse_email**
+  with **votre_adresse_email** which must be located on the following domain names:
+
+  - **mon_compte@outlook.com**
+    or
+  - **mon_compte@outlook.fr**
+    or
+  - **mon_compte@hotmail.com**
+    or
+  - **mon_compte@gmail.com**
+
+
 - **vnd-dropbox://votre_compte** 
 
 ou
 
 - **vnd-dropbox:///**
 
-Si vous ne donnez pas **votre_compte**, il vous sera demandé...
+Si vous ne donnez pas **votre_adresse_email**, elle vous sera demandée...
 
 Après avoir autorisé l'application [OAuth2OOo][21] à accéder à vos fichiers Dropbox, vos fichiers Dropbox devraient apparaître!!! normalement  ;-)
 
