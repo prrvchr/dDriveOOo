@@ -97,22 +97,22 @@ Edit or change "true" to "false" (set it to "false")
 
 In File - Open - File name enter:
 
-- **vnd-dropbox://your_emailaddress**  
-  with **your_emailaddress** which must be located on one of the following domain names:
+- **vnd-dropbox://your_email_address**  
+  with **your_email_address** which must be located on one of the following domain names:
 
-  - **account@outlook.com**  
+  - **your_account@outlook.com**  
   or
-  - **account@outlook.fr**  
+  - **your_account@outlook.fr**  
   or
-  - **account@hotmail.com**  
+  - **your_account@hotmail.com**  
   or
-  - **account@gmail.com**
+  - **your_account@gmail.com**
 
 or
 
 - **vnd-dropbox:///**
 
-If you don't give **your_emailaddress**, you will be asked for...
+If you don't give **your_email_address**, you will be asked for...
 
 After authorizing the [OAuth2OOo][21] application to access your Dropbox files, your Dropbox files should appear!!! normally  ;-)
 

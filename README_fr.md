@@ -100,16 +100,13 @@ Dans: Fichier - Ouvrir - Nom de fichier saisir:
 - **vnd-dropbox://votre_adresse_email**  
   avec **votre_adresse_email** qui doit être située sur l'un des noms de domaine suivants:
 
-  - **mon_compte@outlook.com**  
+  - **votre_compte@outlook.com**  
   ou
-  - **mon_compte@outlook.fr**  
+  - **votre_compte@outlook.fr**  
   ou
-  - **mon_compte@hotmail.com**  
+  - **votre_compte@hotmail.com**  
   ou
-  - **mon_compte@gmail.com**
-
-
-- **vnd-dropbox://votre_compte** 
+  - **votre_compte@gmail.com**
 
 ou
 
