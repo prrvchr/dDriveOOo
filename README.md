@@ -97,14 +97,14 @@ Edit or change "true" to "false" (set it to "false")
 
 In File - Open - File name enter:
 
-- **vnd-dropbox://your_emailaddress**
-  with **your_emailaddress** which must be located on the following domain names:
+- **vnd-dropbox://your_emailaddress**  
+  with **your_emailaddress** which must be located on one of the following domain names:
 
-  - **account@outlook.com**
+  - **account@outlook.com**  
   or
-  - **account@outlook.fr**
+  - **account@outlook.fr**  
   or
-  - **account@hotmail.com**
+  - **account@hotmail.com**  
   or
   - **account@gmail.com**
 

@@ -97,8 +97,8 @@ Editer ou changer "true" par "false" (réglez-le sur "false")
 
 Dans: Fichier - Ouvrir - Nom de fichier saisir:
 
-- **vnd-dropbox://votre_adresse_email**
-  with **votre_adresse_email** which must be located on the following domain names:
+- **vnd-dropbox://votre_adresse_email**  
+  avec **votre_adresse_email** qui doit être située sur l'un des noms de domaine suivants:
 
   - **mon_compte@outlook.com**  
   ou
