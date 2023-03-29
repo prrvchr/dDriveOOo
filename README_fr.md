@@ -100,12 +100,12 @@ Dans: Fichier - Ouvrir - Nom de fichier saisir:
 - **vnd-dropbox://votre_adresse_email**
   with **votre_adresse_email** which must be located on the following domain names:
 
-  - **mon_compte@outlook.com**
-    or
-  - **mon_compte@outlook.fr**
-    or
-  - **mon_compte@hotmail.com**
-    or
+  - **mon_compte@outlook.com**  
+  ou
+  - **mon_compte@outlook.fr**  
+  ou
+  - **mon_compte@hotmail.com**  
+  ou
   - **mon_compte@gmail.com**
 
 

@@ -101,11 +101,11 @@ In File - Open - File name enter:
   with **your_emailaddress** which must be located on the following domain names:
 
   - **account@outlook.com**
-    or
+  or
   - **account@outlook.fr**
-    or
+  or
   - **account@hotmail.com**
-    or
+  or
   - **account@gmail.com**
 
 or
