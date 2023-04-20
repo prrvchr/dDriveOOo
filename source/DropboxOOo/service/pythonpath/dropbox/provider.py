@@ -45,6 +45,8 @@ from .unolib import KeyMap
 
 from .dbtool import toUnoDateTime
 
+from .unotool import getResourceLocation
+
 from .configuration import g_identifier
 from .configuration import g_scheme
 from .configuration import g_provider
@@ -63,12 +65,13 @@ from .configuration import g_doc_map
 
 
 class Provider(ProviderBase):
-    def __init__(self, ctx):
+    def __init__(self, ctx, folder, link, logger):
         self._ctx = ctx
+        self._folder = folder
+        self._link = link
+        self._logger = logger
         self.Scheme = g_scheme
-        self.Link = ''
-        self.Folder = ''
-        self.SourceURL = ''
+        self.SourceURL = getResourceLocation(ctx, g_identifier, g_scheme)
         self.SessionMode = OFFLINE
         self._Error = ''
         self._folders = []
@@ -91,12 +94,14 @@ class Provider(ProviderBase):
     @property
     def Document(self):
         return g_doc_map
+    def DateTimeFormat(self):
+        return '%Y-%m-%dT%H:%M:%S.%fZ'
     @property
-    def Chunk(self):
-        return g_chunk
+    def Folder(self):
+        return self._folder
     @property
-    def Buffer(self):
-        return g_buffer
+    def Link(self):
+        return self._link
 
     def getRequestParameter(self, method, data=None):
         parameter = uno.createUnoStruct('com.sun.star.auth.RestRequestParameter')

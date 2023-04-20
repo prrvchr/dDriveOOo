@@ -42,10 +42,8 @@ g_userfields = 'id,userPrincipalName,displayName'
 g_drivefields = 'id,createdDateTime,lastModifiedDateTime,name'
 g_itemfields = '%s,file,size,parentReference' % g_drivefields
 
-# Minimun chunk: 327680 (320Ko) no more uploads if less... (must be a multiple of 64Ko (and 32Ko))
-g_chunk = 327680  # Http request maximum data size, must be a multiple of 'g_length'
-g_buffer = 32768  # InputStream (Downloader) maximum 'Buffers' size
-g_pages = 100
+# Data chunk: 327680 (320Ko) is the Request iter_content() buffer_size, must be a multiple of 64
+g_chunk = 320 * 1024
 
 g_office = 'application/vnd.oasis.opendocument'
 g_folder = 'application/vnd.dropbox-apps.folder'
