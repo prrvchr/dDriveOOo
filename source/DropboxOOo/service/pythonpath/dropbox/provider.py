@@ -147,28 +147,32 @@ class Provider(ProviderBase):
         response.close()
         return userid, name, displayname, rootid
 
-    def _parseRoot(self, response):
-        events = ijson.sendable_list()
-        parser = ijson.parse_coro(events)
-        iterator = response.iterContent(g_chunk, False)
-        while iterator.hasMoreElements():
-            chunk = iterator.nextElement().value
-            print("Provider._parseRoot() Content: \n%s" % chunk.decode('utf-8'))
-            parser.send(chunk)
-            for prefix, event, value in events:
-                print("Provider._parseRoot() Prefix: %s - Event: %s - Value: %s" % (prefix, event, value))
-                if (prefix, event) == ('id', 'string'):
-                    rootid = value
-                elif (prefix, event) == ('name', 'string'):
-                    name = value
-                elif (prefix, event) == ('server_modified', 'string'):
-                    created = self.parseDateTime(value)
-                elif (prefix, event) == ('client_modified', 'string'):
-                    modified = self.parseDateTime(value)
-            del events[:]
-        parser.close()
+    def _parseItem(self, request, parameter):
+        while parameter.hasNextPage():
+            response = request.execute(parameter)
+            if not response.Ok:
+                break
+            events = ijson.sendable_list()
+            parser = ijson.parse_coro(events)
+            iterator = response.iterContent(g_chunk, False)
+            while iterator.hasMoreElements():
+                chunk = iterator.nextElement().value
+                print("Provider._parseItem() Content: \n%s" % chunk.decode('utf-8'))
+                parser.send(chunk)
+                for prefix, event, value in events:
+                    print("Provider._parseItem() Prefix: %s - Event: %s - Value: %s" % (prefix, event, value))
+                    if (prefix, event) == ('id', 'string'):
+                        itemid = value
+                    elif (prefix, event) == ('name', 'string'):
+                        name = value
+                    elif (prefix, event) == ('server_modified', 'string'):
+                        created = self.parseDateTime(value)
+                    elif (prefix, event) == ('client_modified', 'string'):
+                        modified = self.parseDateTime(value)
+                del events[:]
+            parser.close()
         response.close()
-        return rootid, name, created, modified, g_folder, False, True, False, False, False
+        return itemid, name, created, modified, g_folder, False, True, False, False, False
 
 
 
@@ -220,6 +224,7 @@ class Provider(ProviderBase):
         elif method == 'getFolderContent':
             parameter.Method = 'POST'
             parameter.Url = '%s/files/list_folder' % self.BaseUrl
+            parameter.NextUrl = '%s/files/list_folder/continue' % self.BaseUrl
             path = '' if data.IsRoot else data.Id
             parameter.Json = '{"path": "%s", "include_deleted": false}' % path
             #token = uno.createUnoStruct('com.sun.star.auth.RestRequestToken')
