@@ -41,6 +41,7 @@ g_upload = 'https://content.dropboxapi.com/2'
 g_userfields = 'id,userPrincipalName,displayName'
 g_drivefields = 'id,createdDateTime,lastModifiedDateTime,name'
 g_itemfields = '%s,file,size,parentReference' % g_drivefields
+g_pages = 10
 
 # Data chunk: 327680 (320Ko) is the Request iter_content() buffer_size, must be a multiple of 64
 g_chunk = 320 * 1024

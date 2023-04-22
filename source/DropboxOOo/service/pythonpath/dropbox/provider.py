@@ -32,6 +32,8 @@ import unohelper
 
 from com.sun.star.ucb import IllegalIdentifierException
 
+from com.sun.star.rest.ParameterType import JSON
+
 from .providerbase import ProviderBase
 
 from .dbtool import currentUnoDateTime
@@ -53,6 +55,7 @@ from .configuration import g_folder
 from .configuration import g_office
 from .configuration import g_link
 from .configuration import g_doc_map
+from .configuration import g_pages
 
 from . import ijson
 import traceback
@@ -98,12 +101,33 @@ class Provider(ProviderBase):
     def getFirstPullRoots(self, user):
         return (user.RootId, )
 
-    def initUser(self, request, database, user):
-        data = self.getToken(request, user)
-        if data.IsPresent:
-            token = self.getUserToken(data.Value)
-            if database.updateToken(user.getValue('UserId'), token):
-                user.setValue('Token', token)
+    def initUser(self, database, user, token):
+        # FIXME: Some APIs like Dropbox allow to have the token during the firstPull
+        #token = self.getUserToken(user)
+        if database.updateToken(user.Id, token):
+            user.setToken(token)
+
+    def pullUser(self, user):
+        timestamp = currentDateTimeInTZ()
+        parameter = self.getRequestParameter(user.Request, 'getPull', user)
+        iterator = self.parseItems(user.Request, parameter)
+        count = user.DataBase.mergeItems(user.Id, iterator)
+        return parameter.SyncToken, count, parameter.PageCount
+
+
+    def parseUserToken(self, response):
+        token = None
+        events = ijson.sendable_list()
+        parser = ijson.parse_coro(events)
+        iterator = response.iterContent(g_chunk, False)
+        while iterator.hasMoreElements():
+            parser.send(iterator.nextElement().value)
+            for prefix, event, value in events:
+                if (prefix, event) == ('cursor', 'string'):
+                    token = value
+            del events[:]
+        parser.close()
+        return token
 
     def getUser(self, source, request, name):
         user = self._getUser(source, request, name)
@@ -175,58 +199,82 @@ class Provider(ProviderBase):
         return itemid, name, created, modified, g_folder, False, True, False, False, False
 
 
+    def parseItems(self, request, parameter):
+        print("Provider.parseItems() 1 Method: %s" % parameter.Name)
+        while parameter.hasNextPage():
+            print("Provider.parseItems() 1 Method: %s" % parameter.Name)
+            cursor = None
+            response = request.execute(parameter)
+            print("Provider.parseItems() 2 Method: %s - Encoding: %s - StatusCode: %s - Url:\n%s" % (parameter.Name, response.ApparentEncoding, response.StatusCode, parameter.Url))
+            if not response.Ok:
+                print("Provider.parseItems() Text: %s" % response.Text)
+                break
+            events = ijson.sendable_list()
+            parser = ijson.parse_coro(events)
+            iterator = response.iterContent(g_chunk, False)
+            while iterator.hasMoreElements():
+                chunk = iterator.nextElement().value
+                print("Provider.parseItems() 3 Method: %s- Page: %s - Content\n'%s'" % (parameter.Name, parameter.PageCount, chunk.decode('ascii')))
+                parser.send(chunk)
+                for prefix, event, value in events:
+                    #print("Provider.parseItems() Prefix: %s - Event: %s - Value: %s" % (prefix, event, value))
+                    if (prefix, event) == ('cursor', 'string'):
+                        cursor = value
+                    elif (prefix, event) == ('has_more', 'boolean'):
+                        if value and cursor is not None:
+                            parameter.setNextPage('cursor', cursor, JSON)
+                    elif (prefix, event) == ('value.item', 'start_map'):
+                        itemid = name = None
+                        created = modified = currentUnoDateTime()
+                        mimetype = g_folder
+                        size = 0
+                        addchild = canrename = True
+                        trashed = readonly = versionable = False
+                        parents = []
+                    elif (prefix, event) == ('value.item.id', 'string'):
+                        itemid = value
+                    elif (prefix, event) == ('value.item.name', 'string'):
+                        name = value
+                    elif (prefix, event) == ('value.item.createdDateTime', 'string'):
+                        created = self.parseDateTime(value)
+                    elif (prefix, event) == ('value.item.lastModifiedDateTime', 'string'):
+                        modified = self.parseDateTime(value)
+                    elif (prefix, event) == ('value.item.file.mimeType', 'string'):
+                        mimetype = value
+                    elif (prefix, event) == ('value.item.trashed', 'boolean'):
+                        trashed = value
+                    elif (prefix, event) == ('value.item.size', 'string'):
+                        size = int(value)
+                    elif (prefix, event) == ('value.item.parentReference.id', 'string'):
+                        parents.append(value)
+                    elif (prefix, event) == ('value.item', 'end_map'):
+                        yield itemid, name, created, modified, mimetype, size, trashed, True, True, False, False, parents
+                del events[:]
+            parser.close()
+            response.close()
 
 
     def getRequestParameter(self, request, method, data=None):
         parameter = request.getRequestParameter(method)
+        parameter.Url = self.BaseUrl
+        parameter.NextUrl = self.BaseUrl
         if method == 'getUser':
             parameter.Method = 'POST'
-            parameter.Url = '%s/users/get_current_account' % self.BaseUrl
+            parameter.Url += '/users/get_current_account'
+
+
         elif method == 'getItem':
             parameter.Method = 'POST'
-            parameter.Url = '%s/file_requests/get' % self.BaseUrl
-            parameter.Json = '{"id": "%s"}' % data
+            parameter.Url += '/file_requests/get'
+            parameter.setJson('id', data)
+
         elif method == 'getFirstPull':
             parameter.Method = 'POST'
-            parameter.Url = '%s/files/list_folder' % self.BaseUrl
-            parameter.Json = '{"path": "", "recursive": true, "include_deleted": false}'
-            token = uno.createUnoStruct('com.sun.star.auth.RestRequestToken')
-            token.Type = TOKEN_URL | TOKEN_JSON
-            token.Field = 'cursor'
-            token.Value = '%s/files/list_folder/continue' % self.BaseUrl
-            token.IsConditional = True
-            token.ConditionField = 'has_more'
-            token.ConditionValue = True
-            enumerator = uno.createUnoStruct('com.sun.star.auth.RestRequestEnumerator')
-            enumerator.Field = 'entries'
-            enumerator.Token = token
-            parameter.Enumerator = enumerator
-        elif method == 'getToken':
-            parameter.Method = 'POST'
-            parameter.Url = '%s/files/list_folder/get_latest_cursor' % self.BaseUrl
-            parameter.Json = '{"path": "", "recursive": true, "include_deleted": false}'
-        elif method == 'getPull':
-            parameter.Method = 'POST'
-            parameter.Url = '%s/files/list_folder/continue' % self.BaseUrl
-            parameter.Json = '{"cursor": "%s"}' % data.get('Token')
-            token = uno.createUnoStruct('com.sun.star.auth.RestRequestToken')
-            token.Type = TOKEN_JSON | TOKEN_SYNC
-            token.Field = 'cursor'
-            token.SyncField = ''
-            token.Value = '%s/files/list_folder/continue' % self.BaseUrl
-            token.IsConditional = True
-            token.ConditionField = 'has_more'
-            token.ConditionValue = True
-            enumerator = uno.createUnoStruct('com.sun.star.auth.RestRequestEnumerator')
-            enumerator.Field = 'entries'
-            enumerator.Token = token
-            parameter.Enumerator = enumerator
-        elif method == 'getFolderContent':
-            parameter.Method = 'POST'
-            parameter.Url = '%s/files/list_folder' % self.BaseUrl
-            parameter.NextUrl = '%s/files/list_folder/continue' % self.BaseUrl
-            path = '' if data.IsRoot else data.Id
-            parameter.Json = '{"path": "%s", "include_deleted": false}' % path
+            parameter.Url += '/files/list_folder'
+            parameter.setJson('path', '')
+            parameter.setJson('recursive', True)
+            parameter.setJson('include_deleted', False)
+            
             #token = uno.createUnoStruct('com.sun.star.auth.RestRequestToken')
             #token.Type = TOKEN_URL | TOKEN_JSON
             #token.Field = 'cursor'
@@ -238,77 +286,114 @@ class Provider(ProviderBase):
             #enumerator.Field = 'entries'
             #enumerator.Token = token
             #parameter.Enumerator = enumerator
+
+        elif method == 'getToken':
+            parameter.Method = 'POST'
+            parameter.Url += '/files/list_folder/get_latest_cursor'
+            parameter.setJson('path', '')
+            parameter.setJson('recursive', True)
+            parameter.setJson('include_deleted', False)
+
+        elif method == 'getPull':
+            parameter.Method = 'POST'
+            parameter.Url += '/files/list_folder/continue'
+            parameter.setJson('cursor', data.Token)
+            #token = uno.createUnoStruct('com.sun.star.auth.RestRequestToken')
+            #token.Type = TOKEN_JSON | TOKEN_SYNC
+            #token.Field = 'cursor'
+            #token.SyncField = ''
+            #token.Value = '%s/files/list_folder/continue' % self.BaseUrl
+            #token.IsConditional = True
+            #token.ConditionField = 'has_more'
+            #token.ConditionValue = True
+            #enumerator = uno.createUnoStruct('com.sun.star.auth.RestRequestEnumerator')
+            #enumerator.Field = 'entries'
+            #enumerator.Token = token
+            #parameter.Enumerator = enumerator
+
+        elif method == 'getFolderContent':
+            parameter.Method = 'POST'
+            parameter.Url += '/files/list_folder'
+            parameter.NextUrl += '/files/list_folder/continue'
+            path = '' if data.IsRoot else data.Id
+            parameter.setJson('path', path)
+            parameter.setJson('include_deleted', False)
+            parameter.setJson('limit', g_pages)
+
+            #token = uno.createUnoStruct('com.sun.star.auth.RestRequestToken')
+            #token.Type = TOKEN_URL | TOKEN_JSON
+            #token.Field = 'cursor'
+            #token.Value = '%s/files/list_folder/continue' % self.BaseUrl
+            #token.IsConditional = True
+            #token.ConditionField = 'has_more'
+            #token.ConditionValue = True
+            #enumerator = uno.createUnoStruct('com.sun.star.auth.RestRequestEnumerator')
+            #enumerator.Field = 'entries'
+            #enumerator.Token = token
+            #parameter.Enumerator = enumerator
+
         elif method == 'getDocumentContent':
             parameter.Method = 'POST'
-            parameter.Url = '%s/files/download' % self.UploadUrl
+            parameter.Url = f'{self.UploadUrl}/files/download'
             path = '{\\"path\\": \\"%s\\"}' % data.Id
-            parameter.Header = '{"Dropbox-API-Arg": "%s"}' % path
+            parameter.setHeader('Dropbox-API-Arg', path)
+
         elif method == 'updateTitle':
             parameter.Method = 'POST'
-            parameter.Url = '%s/files/move_v2' % self.BaseUrl
+            parameter.Url += '/files/move_v2'
             path = '' if data.get('AtRoot') else data.get('ParentId')
-            path += '/%s' % data.get('Title')
-            parameter.Json = '{"from_path": "%s","to_path": "%s"}' % (data.get('Id'), path)
+            parameter.setJson('from_path', data.get('Id'))
+            parameter.setJson('to_path', f"{path}/{data.get('Title')}")
+
         elif method == 'updateTrashed':
             parameter.Method = 'POST'
-            parameter.Url = '%s/files/delete_v2' % self.BaseUrl
-            parameter.Json = '{"path": "%s"}' % data.get('Id')
+            parameter.Url += '/files/delete_v2'
+            parameter.setJson('path', data.get('Id'))
 
         elif method == 'updateParents':
             parameter.Method = 'PATCH'
-            parameter.Url = '%s/files/%s' % (self.BaseUrl, data.get('Id'))
+            parameter.Url += f"/files/{data.get('Id')}"
             toadd = data.get('ParentToAdd')
             toremove = data.get('ParentToRemove')
             if len(toadd) > 0:
-                parameter.Json = '{"addParents": %s}' % ','.join(toadd)
+                parameter.setJson('addParents', ','.join(toadd))
             if len(toremove) > 0:
-                parameter.Json = '{"removeParents": %s}' % ','.join(toremove)
+                parameter.setJson('removeParents', ','.join(toremove))
 
         elif method == 'createNewFolder':
             parameter.Method = 'POST'
-            parameter.Url = '%s/files/create_folder_v2' % self.BaseUrl
+            parameter.Url += '/files/create_folder_v2'
             path = '' if data.get('AtRoot') else data.get('ParentId')
-            path += '/%s' % data.get('Title')
-            parameter.Json = '{"path": "%s"}' % path
+            parameter.setJson('path', f"{path}/{data.get('Title')}")
+
         elif method == 'createNewFile':
             parameter.Method = 'POST'
-            parameter.Url = '%s/file_requests/create' % self.BaseUrl
-            title = data.get('Title')
+            parameter.Url += '/file_requests/create'
             path = '' if data.get('AtRoot') else data.get('ParentId')
-            path += '/%s' % title
-            parameter.Json = '{"title": "%s", "destination": "%s"}' % (title, path)
+            parameter.setJson('title', data.get('Title'))
+            parameter.setJson('destination', f"{path}/{data.get('Title')}")
+
         elif method == 'getUploadLocation':
             parameter.Method = 'POST'
-            parameter.Url = '%s/files/get_temporary_upload_link' % self.BaseUrl
-            path = '"path": "%s"' % data.get('Id')
-            mode = '"mode": "overwrite"'
-            mute = '"mute": true'
-            info = '{"commit_info": {%s, %s, %s}}' % (path, mode, mute)
-            parameter.Json = info
+            parameter.Url += '/files/get_temporary_upload_link'
+            parameter.setNesting('commit_info/path', data.get('Id'))
+            parameter.setNesting('commit_info/mode', 'overwrite')
+            parameter.setNesting('commit_info/mute', True)
+
         elif method == 'getNewUploadLocation':
             parameter.Method = 'POST'
-            parameter.Url = '%s/files/get_temporary_upload_link' % self.BaseUrl
+            parameter.Url += '/files/get_temporary_upload_link'
             path = '' if data.get('AtRoot') else data.get('ParentId')
-            path += '/%s' % data.get('Title')
-            path = '"path": "%s"' % path
-            mode = '"mode": "add"'
-            mute = '"mute": true'
-            info = '{"commit_info": {%s, %s, %s}}' % (path, mode, mute)
-            parameter.Json = info
+            parameter.setNesting('commit_info/path', f"{path}/{data.get('Title')}")
+            parameter.setNesting('commit_info/mode', 'add')
+            parameter.setNesting('commit_info/mute', True)
+
         elif method == 'getUploadStream':
             parameter.Method = 'POST'
             parameter.Url = data.get('link')
-            parameter.Header = '{"Content-Type": "application/octet-stream"}'
+            parameter.setHeader('Content-Type', 'application/octet-stream')
         return parameter
 
-    def getUserId(self, user):
-        return user.getValue('account_id')
-    def getUserName(self, user):
-        return user.getValue('email')
-    def getUserDisplayName(self, user):
-        return user.getValue('name').getValue('display_name')
-    def getUserToken(self, data):
-        return data.getValue('cursor')
 
     def getItemParent(self, item, rootid):
         ref = item.getDefaultValue('parentReference', KeyMap())
