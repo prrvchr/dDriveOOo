@@ -199,8 +199,10 @@ class Provider(ProviderBase):
         response.close()
         return itemid, name, created, modified, g_folder, False, True, False, False, False
 
+    def parseRootFolder(self, parameter, content):
+        return self.parseItems(content.User.Request, parameter, (content.Id, ))
+
     def parseItems(self, request, parameter, parents=()):
-        print("Provider.parseItems() 1 Method: %s - Parent: %s - Url: %s" % (parameter.Name, parents, parameter.Url))
         while parameter.hasNextPage():
             cursor = None
             response = request.execute(parameter)
