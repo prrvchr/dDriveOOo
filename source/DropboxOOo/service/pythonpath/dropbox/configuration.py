@@ -36,7 +36,7 @@ g_provider = 'Dropbox'
 g_host = 'api.dropboxapi.com'
 g_version = '2'
 g_url = 'https://%s/%s' % (g_host, g_version)
-g_upload = 'https://content.dropboxapi.com/2'
+g_upload = 'https://content.dropboxapi.com/%s' % g_version
 
 g_userfields = 'id,userPrincipalName,displayName'
 g_drivefields = 'id,createdDateTime,lastModifiedDateTime,name'

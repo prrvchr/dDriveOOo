@@ -19,7 +19,7 @@
                 <value>Dropbox</value>
             </prop>
             <prop oor:name="Values">
-                <value>N/A</value>
+                <value>account_info.read files.metadata.write files.content.write</value>
             </prop>
         </node>
     </node>
