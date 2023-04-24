@@ -109,6 +109,11 @@ class Provider(ProviderBase):
         if database.updateToken(user.Id, token):
             user.setToken(token)
 
+    def getUser(self, source, request, name):
+        user = self._getUser(source, request, name)
+        root = self._getRoot(user[-1])
+        return user, root
+
     def pullUser(self, user):
         timestamp = currentDateTimeInTZ()
         parameter = self.getRequestParameter(user.Request, 'getPull', user)
@@ -130,12 +135,6 @@ class Provider(ProviderBase):
         parser.close()
         return token
 
-    def getUser(self, source, request, name):
-        user = self._getUser(source, request, name)
-        root = self._getRoot(user[-1])
-        print("Provider.getUser() UserId: %s - RootId: %s" % (user[0], user[-1]))
-        return user, root
-
     def getDocumentLocation(self, content):
         return content
 
@@ -152,7 +151,6 @@ class Provider(ProviderBase):
         return rootid, 'Homework', timestamp, timestamp, g_folder, False, True, False, False, False
 
     def _parseUser(self, response):
-        print("Provider._parseUser() 1 Method: %s" % response.Parameter.Name)
         userid = name = displayname = rootid = None
         events = ijson.sendable_list()
         parser = ijson.parse_coro(events)
@@ -202,24 +200,18 @@ class Provider(ProviderBase):
         return itemid, name, created, modified, g_folder, False, True, False, False, False
 
     def parseItems(self, request, parameter, parents=()):
-        print("Provider.parseItems() 1 Method: %s - Url: " % parameter.Name)
+        print("Provider.parseItems() 1 Method: %s - Parent: %s - Url: %s" % (parameter.Name, parents, parameter.Url))
         while parameter.hasNextPage():
-            print("Provider.parseItems() 1 Method: %s" % parameter.Name)
             cursor = None
             response = request.execute(parameter)
-            print("Provider.parseItems() 2 Method: %s - Encoding: %s - StatusCode: %s - Url:\n%s" % (parameter.Name, response.ApparentEncoding, response.StatusCode, parameter.Url))
             if not response.Ok:
-                print("Provider.parseItems() Text: %s" % response.Text)
                 break
             events = ijson.sendable_list()
             parser = ijson.parse_coro(events)
             iterator = response.iterContent(g_chunk, False)
             while iterator.hasMoreElements():
-                chunk = iterator.nextElement().value
-                print("Provider.parseItems() 3 Method: %s- Page: %s - Content\n'%s'" % (parameter.Name, parameter.PageCount, chunk.decode('ascii')))
-                parser.send(chunk)
+                parser.send(iterator.nextElement().value)
                 for prefix, event, value in events:
-                    print("Provider.parseItems() Prefix: %s - Event: %s - Value: %s" % (prefix, event, value))
                     if (prefix, event) == ('cursor', 'string'):
                         parameter.SyncToken = value
                     elif (prefix, event) == ('has_more', 'boolean'):
@@ -247,19 +239,51 @@ class Provider(ProviderBase):
                         size = value
                     elif (prefix, event) == ('entries.item.path_display', 'string'):
                         if not parents:
-                            path = value
+                            path, sep, tmp = value.rpartition('/')
                     elif (prefix, event) == ('entries.item', 'end_map'):
                         yield itemid, name, created, modified, mimetype, size, False, True, True, False, False, path, parents
                 del events[:]
             parser.close()
             response.close()
 
-    def createFile(self, request, data):
-        parameter = self.getRequestParameter('createNewFile', data)
-        response = request.execute(parameter)
-        status = response.Ok
+    def parseUploadLocation(self, response):
+        url =  None
+        if response.Ok:
+            events = ijson.sendable_list()
+            parser = ijson.parse_coro(events)
+            iterator = response.iterContent(g_chunk, False)
+            while iterator.hasMoreElements():
+                parser.send(iterator.nextElement().value)
+                for prefix, event, value in events:
+                    if (prefix, event) == ('link', 'string'):
+                        url = value
+                del events[:]
+            parser.close()
+        response.close()
+        return url
+
+    def mergeNewFolder(self, response, user, item):
+        status = False
+        if response.Ok:
+            status = user.DataBase.updateNewItemId(item, self._parseNewFolder(response))
         response.close()
         return status
+
+    def _parseNewFolder(self, response):
+        newid = None
+        created = modified = currentUnoDateTime()
+        events = ijson.sendable_list()
+        parser = ijson.parse_coro(events)
+        iterator = response.iterContent(g_chunk, False)
+        while iterator.hasMoreElements():
+            parser.send(iterator.nextElement().value)
+            for prefix, event, value in events:
+                if (prefix, event) == ('metadata.id', 'string'):
+                    newid = value
+            del events[:]
+        parser.close()
+        response.close()
+        return newid, created, modified
 
     def getRequestParameter(self, request, method, data=None):
         parameter = request.getRequestParameter(method)
@@ -291,7 +315,7 @@ class Provider(ProviderBase):
 
         elif method == 'getPull':
             parameter.Method = 'POST'
-            parameter.Url += '/files/list_folder'
+            parameter.Url += '/files/list_folder/continue'
             parameter.NextUrl += '/files/list_folder/continue'
             parameter.setJson('cursor', data.Token)
 
@@ -299,8 +323,8 @@ class Provider(ProviderBase):
             parameter.Method = 'POST'
             parameter.Url += '/files/list_folder'
             parameter.NextUrl += '/files/list_folder/continue'
-            #path = '/' if data.IsRoot else data.Id
-            parameter.setJson('path', '' if data.IsRoot else data.Id)
+            path = '' if data.IsRoot else data.Id
+            parameter.setJson('path', path)
             parameter.setJson('include_deleted', False)
             parameter.setJson('limit', g_pages)
 
@@ -313,7 +337,7 @@ class Provider(ProviderBase):
             parameter.Method = 'POST'
             parameter.Url += '/files/move_v2'
             path = '' if data.get('AtRoot') else data.get('ParentId')
-            tilte = data.get('Title')
+            title = data.get('Title')
             parameter.setJson('from_path', data.get('Id'))
             parameter.setJson('to_path', f'{path}/{title}')
 
@@ -336,17 +360,16 @@ class Provider(ProviderBase):
         elif method == 'createNewFolder':
             parameter.Method = 'POST'
             parameter.Url += '/files/create_folder_v2'
-            path = '' if data.get('AtRoot') else data.get('ParentId')
-            tilte = data.get('Title')
+            path, title = data.get('Path'), data.get('Title')
+            print("Provider.createNewFolder() Path: %s - Title: %s" % (path, title))
             parameter.setJson('path', f'{path}/{title}')
 
         elif method == 'createNewFile':
             parameter.Method = 'POST'
             parameter.Url += '/file_requests/create'
-            path = '' if data.get('AtRoot') else data.get('ParentId')
-            tilte = data.get('Title')
+            path, title = data.get('Path'), data.get('Title')
             parameter.setJson('title', title)
-            parameter.setJson('destination', f'{path}/{title}')
+            parameter.setJson('destination', path)
 
         elif method == 'getUploadLocation':
             parameter.Method = 'POST'
@@ -358,15 +381,14 @@ class Provider(ProviderBase):
         elif method == 'getNewUploadLocation':
             parameter.Method = 'POST'
             parameter.Url += '/files/get_temporary_upload_link'
-            path = '' if data.get('AtRoot') else data.get('ParentId')
-            tilte = data.get('Title')
+            path, title = data.get('Path'), data.get('Title')
             parameter.setNesting('commit_info/path', f'{path}/{title}')
             parameter.setNesting('commit_info/mode', 'add')
             parameter.setNesting('commit_info/mute', True)
 
         elif method == 'getUploadStream':
             parameter.Method = 'POST'
-            parameter.Url = data.get('link')
+            parameter.Url = data
             parameter.setHeader('Content-Type', 'application/octet-stream')
 
         return parameter
