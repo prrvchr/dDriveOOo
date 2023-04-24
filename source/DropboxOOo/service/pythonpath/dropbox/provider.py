@@ -114,13 +114,6 @@ class Provider(ProviderBase):
         root = self._getRoot(user[-1])
         return user, root
 
-    def pullUser(self, user):
-        timestamp = currentDateTimeInTZ()
-        parameter = self.getRequestParameter(user.Request, 'getPull', user)
-        iterator = self.parseItems(user.Request, parameter)
-        count = user.DataBase.pullItems(iterator, user.Id, timestamp)
-        return parameter.PageCount, count, parameter.SyncToken
-
     def parseUserToken(self, response):
         token = None
         events = ijson.sendable_list()
