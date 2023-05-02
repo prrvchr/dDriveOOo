@@ -129,6 +129,8 @@ class Provider(ProviderBase):
         return token
 
     def getDocumentLocation(self, content):
+        # FIXME: This method being also called by the replicator,
+        # FIXME: we must provide a dictionary
         return content.MetaData
 
     def _getUser(self, source, request, name):
