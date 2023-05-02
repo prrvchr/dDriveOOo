@@ -1,1 +1,0 @@
-DropboxOOo is a Dropbox implementation for LibreOffice / OpenOffice.
