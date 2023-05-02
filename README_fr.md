@@ -1,4 +1,4 @@
-# ![DropboxOOo logo][1] DropboxOOo
+# ![dbDriveOOo logo][1] dbDriveOOo
 <!--
 ╔════════════════════════════════════════════════════════════════════════════════════╗
 ║                                                                                    ║
@@ -27,7 +27,7 @@
 
 **L'accès à Dropbox est temporairement suspendu:**
 
-Nous avons atteint la [limite des 500 utilisateurs](https://github.com/prrvchr/DropboxOOo/issues/1), je viens de basculer l'application OAuth2OOo en mode production et nous attendons l'acceptation de Dropbox...
+Nous avons atteint la [limite des 500 utilisateurs](https://github.com/prrvchr/dbDriveOOo/issues/1), je viens de basculer l'application OAuth2OOo en mode production et nous attendons l'acceptation de Dropbox...
 Merci pour votre patience...
 
 **This [document][2] in English.**
@@ -38,7 +38,7 @@ Merci pour votre patience...
 
 ## Introduction:
 
-**DropboxOOo** fait partie d'une [Suite][6] d'extensions [LibreOffice][7] et/ou [OpenOffice][8] permettant de vous offrir des services inovants dans ces suites bureautique.  
+**dbDriveOOo** fait partie d'une [Suite][6] d'extensions [LibreOffice][7] et/ou [OpenOffice][8] permettant de vous offrir des services inovants dans ces suites bureautique.  
 Cette extension vous permet de travailler dans LibreOffice / OpenOffice sur vos fichiers Dropbox, même hors ligne.
 
 Etant un logiciel libre je vous encourage:
@@ -51,7 +51,7 @@ Car c'est ensemble que nous pouvons rendre le Logiciel Libre plus intelligent.
 
 ## Prérequis:
 
-DropboxOOo utilise une base de données locale [HsqlDB][11] version 2.7.1.  
+dbDriveOOo utilise une base de données locale [HsqlDB][11] version 2.7.1.  
 HsqlDB étant une base de données écrite en Java, son utilisation nécessite [l'installation et la configuration][12] dans LibreOffice / OpenOffice d'un **JRE version 11 ou ultérieure**.  
 Je vous recommande [Adoptium][13] comme source d'installation de Java.
 
@@ -76,7 +76,7 @@ Vous devez d'abord installer cette extension, si elle n'est pas déjà installé
 
 Vous devez installer cette extension, si elle n'est pas déjà installée.
 
-- Installer l'extension ![DropboxOOo logo][1] **[DropboxOOo.oxt][20]** version 0.0.6.
+- Installer l'extension ![dbDriveOOo logo][1] **[dbDriveOOo.oxt][20]** version 0.0.6.
 
 Redémarrez LibreOffice / OpenOffice après l'installation.
 
@@ -187,7 +187,7 @@ Bien que cette fonctionnalité ne soit nécessaire que pour gDriveOOo, elle est 
   - La synchronisation des modifications locales par des opérations atomiques effectuées dans l'ordre chronologique pour supporter pleinement le travail hors ligne.  
   Pour ce faire, trois procédures SQL [GetPushItems][37], [GetPushProperties][38] et [UpdatePushItems][39] sont utilisées pour chaque utilisateur ayant accédé à ses fichiers / dossiers.
 
-- Réécriture de la [fenêtre des options][40] accessible par : **Outils -> Options -> Internet -> DropboxOOo** afin de permettre :
+- Réécriture de la [fenêtre des options][40] accessible par : **Outils -> Options -> Internet -> dbDriveOOo** afin de permettre :
   - L'accès aux deux fichiers journaux concernant les activités de l'UCP et du réplicateur de données.
   - Le choix de l'ordre de synchronisation.
   - La modification de l'intervalle entre deux synchronisations.
@@ -203,16 +203,16 @@ Bien que cette fonctionnalité ne soit nécessaire que pour gDriveOOo, elle est 
 
 - Tout ce qui est bienvenu...
 
-[1]: <img/DropboxOOo.png>
-[2]: <https://prrvchr.github.io/DropboxOOo>
-[3]: <https://prrvchr.github.io/DropboxOOo/source/DropboxOOo/registration/TermsOfUse_fr>
-[4]: <https://prrvchr.github.io/DropboxOOo/source/DropboxOOo/registration/PrivacyPolicy_fr>
-[5]: <https://prrvchr.github.io/DropboxOOo/README_fr#historique>
+[1]: <img/dbDriveOOo.png>
+[2]: <https://prrvchr.github.io/dbDriveOOo>
+[3]: <https://prrvchr.github.io/dbDriveOOo/source/dbDriveOOo/registration/TermsOfUse_fr>
+[4]: <https://prrvchr.github.io/dbDriveOOo/source/dbDriveOOo/registration/PrivacyPolicy_fr>
+[5]: <https://prrvchr.github.io/dbDriveOOo/README_fr#historique>
 [6]: <https://prrvchr.github.io/README_fr>
 [7]: <https://fr.libreoffice.org/download/telecharger-libreoffice/>
 [8]: <https://www.openoffice.org/fr/Telecharger/>
-[9]: <https://github.com/prrvchr/DropboxOOo>
-[10]: <https://github.com/prrvchr/DropboxOOo/issues/new>
+[9]: <https://github.com/prrvchr/dbDriveOOo>
+[10]: <https://github.com/prrvchr/dbDriveOOo/issues/new>
 [11]: <http://hsqldb.org/>
 [12]: <https://wiki.documentfoundation.org/Documentation/HowTo/Install_the_correct_JRE_-_LibreOffice_on_Windows_10/fr>
 [13]: <https://adoptium.net/releases.html?variant=openjdk11>
@@ -222,24 +222,24 @@ Bien que cette fonctionnalité ne soit nécessaire que pour gDriveOOo, elle est 
 [17]: <https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt>
 [18]: <https://prrvchr.github.io/jdbcDriverOOo/img/jdbcDriverOOo.png>
 [19]: <https://github.com/prrvchr/jdbcDriverOOo/raw/master/source/jdbcDriverOOo/dist/jdbcDriverOOo.oxt>
-[20]: <https://github.com/prrvchr/DropboxOOo/raw/master/source/DropboxOOo/dist/DropboxOOo.oxt>
-[21]: <https://prrvchr.github.io/DropboxOOo/README_fr#configuration>
+[20]: <https://github.com/prrvchr/dbDriveOOo/raw/master/source/dbDriveOOo/dist/dbDriveOOo.oxt>
+[21]: <https://prrvchr.github.io/dbDriveOOo/README_fr#configuration>
 [22]: <https://prrvchr.github.io/OAuth2OOo/README_fr>
-[23]: <https://github.com/prrvchr/DropboxOOo/blob/master/uno/lib/uno/ucb/replicator.py>
-[24]: <https://github.com/prrvchr/DropboxOOo/blob/master/uno/lib/uno/ucb/database.py>
-[25]: <https://github.com/prrvchr/DropboxOOo/blob/master/uno/lib/uno/ucb/datasource.py>
-[26]: <https://github.com/prrvchr/DropboxOOo/blob/master/uno/lib/uno/ucb/dbqueries.py>
+[23]: <https://github.com/prrvchr/dbDriveOOo/blob/master/uno/lib/uno/ucb/replicator.py>
+[24]: <https://github.com/prrvchr/dbDriveOOo/blob/master/uno/lib/uno/ucb/database.py>
+[25]: <https://github.com/prrvchr/dbDriveOOo/blob/master/uno/lib/uno/ucb/datasource.py>
+[26]: <https://github.com/prrvchr/dbDriveOOo/blob/master/uno/lib/uno/ucb/dbqueries.py>
 [27]: <https://datatracker.ietf.org/doc/html/draft-king-vnd-urlscheme-00>
-[28]: <https://github.com/prrvchr/DropboxOOo/blob/master/uno/lib/uno/ucb/dbqueries.py#L165>
-[29]: <https://github.com/prrvchr/DropboxOOo/blob/master/uno/lib/uno/ucb/dbqueries.py#L175>
-[30]: <https://github.com/prrvchr/DropboxOOo/blob/master/uno/lib/uno/ucb/dbqueries.py#L195>
-[31]: <https://github.com/prrvchr/DropboxOOo/blob/master/uno/lib/uno/ucb/dbqueries.py#L215>
-[32]: <https://github.com/prrvchr/DropboxOOo/blob/master/uno/lib/uno/ucb/ucp/parameterizedprovider.py>
-[33]: <https://github.com/prrvchr/DropboxOOo/blob/master/source/DropboxOOo/DropboxOOo.xcu#L19>
-[34]: <https://github.com/prrvchr/DropboxOOo/blob/master/uno/rdb/idl/io/github/prrvchr/css/util/DateTimeWithTimezone.idl>
+[28]: <https://github.com/prrvchr/dbDriveOOo/blob/master/uno/lib/uno/ucb/dbqueries.py#L165>
+[29]: <https://github.com/prrvchr/dbDriveOOo/blob/master/uno/lib/uno/ucb/dbqueries.py#L175>
+[30]: <https://github.com/prrvchr/dbDriveOOo/blob/master/uno/lib/uno/ucb/dbqueries.py#L195>
+[31]: <https://github.com/prrvchr/dbDriveOOo/blob/master/uno/lib/uno/ucb/dbqueries.py#L215>
+[32]: <https://github.com/prrvchr/dbDriveOOo/blob/master/uno/lib/uno/ucb/ucp/parameterizedprovider.py>
+[33]: <https://github.com/prrvchr/dbDriveOOo/blob/master/source/dbDriveOOo/dbDriveOOo.xcu#L19>
+[34]: <https://github.com/prrvchr/dbDriveOOo/blob/master/uno/rdb/idl/io/github/prrvchr/css/util/DateTimeWithTimezone.idl>
 [35]: <https://prrvchr.github.io/jdbcDriverOOo/README_fr>
 [36]: <https://bz.apache.org/ooo/show_bug.cgi?id=128560>
-[37]: <https://github.com/prrvchr/DropboxOOo/blob/master/uno/lib/uno/ucb/dbqueries.py#L481>
-[38]: <https://github.com/prrvchr/DropboxOOo/blob/master/uno/lib/uno/ucb/dbqueries.py#L524>
-[39]: <https://github.com/prrvchr/DropboxOOo/blob/master/uno/lib/uno/ucb/dbqueries.py#L463>
-[40]: <https://github.com/prrvchr/DropboxOOo/tree/master/uno/lib/uno/options/ucb>
+[37]: <https://github.com/prrvchr/dbDriveOOo/blob/master/uno/lib/uno/ucb/dbqueries.py#L481>
+[38]: <https://github.com/prrvchr/dbDriveOOo/blob/master/uno/lib/uno/ucb/dbqueries.py#L524>
+[39]: <https://github.com/prrvchr/dbDriveOOo/blob/master/uno/lib/uno/ucb/dbqueries.py#L463>
+[40]: <https://github.com/prrvchr/dbDriveOOo/tree/master/uno/lib/uno/options/ucb>
