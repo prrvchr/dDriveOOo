@@ -25,11 +25,6 @@
 ╚════════════════════════════════════════════════════════════════════════════════════╝
 -->
 
-**L'accès à Dropbox est temporairement suspendu:**
-
-Nous avons atteint la [limite des 500 utilisateurs](https://github.com/prrvchr/dDriveOOo/issues/1), je viens de basculer l'application OAuth2OOo en mode production et nous attendons l'acceptation de Dropbox...
-Merci pour votre patience...
-
 **This [document][2] in English.**
 
 **L'utilisation de ce logiciel vous soumet à nos** [Conditions d'utilisation][3] **et à notre** [Politique de protection des données][4].
