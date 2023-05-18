@@ -24,15 +24,14 @@
 ║                                                                                    ║
 ╚════════════════════════════════════════════════════════════════════════════════════╝
 -->
-<oor:component-data oor:name="dDriveOOo" oor:package="io.github.prrvchr"
+<oor:component-data oor:name="Common" oor:package="org.openoffice.Office"
   xsi:schemaLocation="http://openoffice.org/2001/registry/component-update.xsd"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:oor="http://openoffice.org/2001/registry"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <prop oor:name="ReplicateTimeout">
-    <value>600</value>
-  </prop>
-  <prop oor:name="SynchronizePolicy">
-    <value>CLIENT_IS_MASTER</value>
-  </prop>
+  <node oor:name="Misc">
+    <prop oor:name="UseSystemFileDialog">
+      <value>false</value>
+    </prop>
+  </node>
 </oor:component-data>

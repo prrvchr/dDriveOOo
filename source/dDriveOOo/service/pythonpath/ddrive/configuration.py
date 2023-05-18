@@ -64,8 +64,8 @@ g_separator = '/'
 g_resource = 'resource'
 # Logging required global variable
 g_basename = 'ContentProvider'
-g_defaultlog = 'DropboxLog'
-g_errorlog = 'DropboxError'
+g_defaultlog = 'dDriveLog'
+g_errorlog = 'dDriveError'
 # Logging global variable
-g_synclog = 'DropboxSync'
+g_synclog = 'dDriveSync'
 

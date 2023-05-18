@@ -1,9 +1,13 @@
 eclipse.preferences.version=1
-encoding//service/ContentProvider.py=utf-8
+encoding//service/NamedProvider.py=utf-8
 encoding//service/OptionsHandler.py=utf-8
+encoding//service/UnamedProvider.py=utf-8
 encoding//service/dDriveOOo.py=utf-8
 encoding//service/pythonpath/ddrive/configuration.py=utf-8
+encoding//service/pythonpath/ddrive/datasource.py=utf-8
 encoding//service/pythonpath/ddrive/provider.py=utf-8
 encoding//service/pythonpath/ddrive/providerbase.py=utf-8
 encoding//service/pythonpath/ddrive/ucp/content.py=utf-8
+encoding//service/pythonpath/ddrive/ucp/contentidentifier.py=utf-8
+encoding//service/pythonpath/ddrive/ucp/contentuser.py=utf-8
 encoding/<project>=UTF-8
