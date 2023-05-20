@@ -327,16 +327,15 @@ class Provider(ProviderBase):
 
         elif method == 'getDocumentContent':
             parameter.Method = 'POST'
-            parameter.Url = f'{self.UploadUrl}/files/download'
-            parameter.setHeader('Dropbox-API-Arg', json.dumps({'path': data.get('Id')}))
+            parameter.Url = self.UploadUrl + '/files/download'
+            parameter.setHeader('Dropbox-API-Arg', '{"path": "%s"}' % data.get('Id'))
 
         elif method == 'updateTitle':
             parameter.Method = 'POST'
             parameter.Url += '/files/move_v2'
             path = '' if data.get('AtRoot') else data.get('ParentId')
-            title = data.get('Title')
             parameter.setJson('from_path', data.get('Id'))
-            parameter.setJson('to_path', f'{path}/{title}')
+            parameter.setJson('to_path', path + '/' + data.get('Title'))
 
         elif method == 'updateTrashed':
             parameter.Method = 'POST'
@@ -345,8 +344,7 @@ class Provider(ProviderBase):
 
         elif method == 'updateParents':
             parameter.Method = 'PATCH'
-            itemid = data.get('Id')
-            parameter.Url += f'/files/{itemid}'
+            parameter.Url += '/files/' + data.get('Id')
             toadd = data.get('ParentToAdd')
             toremove = data.get('ParentToRemove')
             if len(toadd) > 0:
@@ -357,16 +355,13 @@ class Provider(ProviderBase):
         elif method == 'createNewFolder':
             parameter.Method = 'POST'
             parameter.Url += '/files/create_folder_v2'
-            path, title = data.get('Path'), data.get('Title')
-            print("Provider.createNewFolder() Path: %s - Title: %s" % (path, title))
-            parameter.setJson('path', f'{path}/{title}')
+            parameter.setJson('path', data.get('Path') + '/' + data.get('Title'))
 
         elif method == 'createNewFile':
             parameter.Method = 'POST'
             parameter.Url += '/file_requests/create'
-            path, title = data.get('Path'), data.get('Title')
-            parameter.setJson('title', title)
-            parameter.setJson('destination', path)
+            parameter.setJson('title', data.get('Title'))
+            parameter.setJson('destination', data.get('Path'))
 
         elif method == 'getUploadLocation':
             parameter.Method = 'POST'
@@ -378,8 +373,7 @@ class Provider(ProviderBase):
         elif method == 'getNewUploadLocation':
             parameter.Method = 'POST'
             parameter.Url += '/files/get_temporary_upload_link'
-            path, title = data.get('Path'), data.get('Title')
-            parameter.setNesting('commit_info/path', f'{path}/{title}')
+            parameter.setNesting('commit_info/path', data.get('Path') + '/' + data.get('Title'))
             parameter.setNesting('commit_info/mode', 'add')
             parameter.setNesting('commit_info/mute', True)
 
