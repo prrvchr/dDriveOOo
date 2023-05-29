@@ -6,6 +6,7 @@ encoding//service/dDriveOOo.py=utf-8
 encoding//service/pythonpath/cffi/__init__.py=utf-8
 encoding//service/pythonpath/ddrive/configuration.py=utf-8
 encoding//service/pythonpath/ddrive/datasource.py=utf-8
+encoding//service/pythonpath/ddrive/options/optionsmanager.py=utf-8
 encoding//service/pythonpath/ddrive/provider.py=utf-8
 encoding//service/pythonpath/ddrive/providerbase.py=utf-8
 encoding//service/pythonpath/ddrive/replicator.py=utf-8
