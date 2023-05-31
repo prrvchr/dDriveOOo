@@ -265,9 +265,9 @@ class Provider(ProviderBase):
                 newid = self._parseNewId(response)
                 if newid and oldid != newid:
                     database.updateItemId(newid, oldid)
-                return True
+                return newid
             response.close()
-        return False
+        return None
 
     def _parseNewId(self, response):
         newid = None
@@ -284,26 +284,26 @@ class Provider(ProviderBase):
         response.close()
         return newid
 
-    def mergeNewFolder(self, response, user, item):
-        status = False
-        if response.Ok:
-            status = user.DataBase.updateNewItemId(item, self._parseNewFolder(response))
-        response.close()
-        return status
+    def mergeNewFolder(self, user, oldid, response):
+        item = self._parseNewFolder(response)
+        if all(item):
+            return user.DataBase.updateNewItemId(oldid, *item)
+        return None
 
     def _parseNewFolder(self, response):
-        newid = None
-        created = modified = currentUnoDateTime()
-        events = ijson.sendable_list()
-        parser = ijson.parse_coro(events)
-        iterator = response.iterContent(g_chunk, False)
-        while iterator.hasMoreElements():
-            parser.send(iterator.nextElement().value)
-            for prefix, event, value in events:
-                if (prefix, event) == ('metadata.id', 'string'):
-                    newid = value
-            del events[:]
-        parser.close()
+        newid = created = modified = None
+        if response.Ok:
+            created = modified = currentUnoDateTime()
+            events = ijson.sendable_list()
+            parser = ijson.parse_coro(events)
+            iterator = response.iterContent(g_chunk, False)
+            while iterator.hasMoreElements():
+                parser.send(iterator.nextElement().value)
+                for prefix, event, value in events:
+                    if (prefix, event) == ('metadata.id', 'string'):
+                        newid = value
+                del events[:]
+            parser.close()
         response.close()
         return newid, created, modified
 
