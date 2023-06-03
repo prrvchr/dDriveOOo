@@ -226,7 +226,7 @@ class Provider(ProviderBase):
                         modified = self.parseDateTime(value)
                     elif (prefix, event) == ('entries.item..tag', 'string'):
                         mimetype = g_folder if value == 'folder' else 'application/octet-stream'
-                    elif (prefix, event) == ('entries.item.size', 'integer'):
+                    elif (prefix, event) == ('entries.item.size', 'number'):
                         size = value
                     elif (prefix, event) == ('entries.item.path_display', 'string'):
                         if not parents:
