@@ -63,8 +63,6 @@ import traceback
 
 
 class Provider(ProviderBase):
-    def __init__(self, ctx, folder, link, logger):
-        super(Provider, self).__init__(ctx, folder, link, logger)
 
     @property
     def Name(self):
