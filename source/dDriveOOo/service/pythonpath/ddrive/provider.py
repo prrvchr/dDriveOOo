@@ -383,16 +383,16 @@ class Provider(ProviderBase):
         elif method == 'getUploadLocation':
             parameter.Method = 'POST'
             parameter.Url += '/files/get_temporary_upload_link'
-            parameter.setNesting('commit_info/path', data.get('Id'))
-            parameter.setNesting('commit_info/mode', 'overwrite')
-            parameter.setNesting('commit_info/mute', True)
+            parameter.setJson('commit_info/path', data.get('Id'))
+            parameter.setJson('commit_info/mode', 'overwrite')
+            parameter.setJson('commit_info/mute', True)
 
         elif method == 'getNewUploadLocation':
             parameter.Method = 'POST'
             parameter.Url += '/files/get_temporary_upload_link'
-            parameter.setNesting('commit_info/path', data.get('Path') + '/' + data.get('Title'))
-            parameter.setNesting('commit_info/mode', 'add')
-            parameter.setNesting('commit_info/mute', True)
+            parameter.setJson('commit_info/path', data.get('Path') + '/' + data.get('Title'))
+            parameter.setJson('commit_info/mode', 'add')
+            parameter.setJson('commit_info/mute', True)
 
         elif method == 'getUploadStream':
             parameter.Method = 'POST'
