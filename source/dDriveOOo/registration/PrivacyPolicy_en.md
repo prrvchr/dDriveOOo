@@ -1,8 +1,10 @@
-# ![dDriveOOo logo][1] dDriveOOo - Data Protection Policy
+# Data Protection Policy
 
-**Use of this software also subjects you to our [Terms Of Use][2].**
+**Ce [document][2] en français.**
 
-Regarding installation, configuration and use, please consult the [documentation][3].
+**Use of this software also subjects you to our [Terms Of Use][3].**
+
+Regarding installation, configuration and use, please consult the **[documentation][4]**.
 
 ## Introduction:
 
@@ -15,12 +17,14 @@ For simplicity, in the rest of this document, will be named:
 - `User`: the user of the dDriveOOo software.
 - `Supplier`: the Internet service provider delivering internet services to `dDriveOOo`.
 
+___
 ## Contact:
 
 In any case, it is possible to contact the person responsible for data processing at:
 
 prrvchr@gmail.com
 
+___
 ## Use of your personal data:
 
 To work `dDriveOOo` need to keep data locally.
@@ -35,6 +39,7 @@ Use of the `Supplier` services through `dDriveOOo`, may submit you to the Data P
 
 `Supplier` is solely responsible for the use of the data it collects as described in its Policy.
 
+___
 ## Security of your personal information:
 
 Since the data collected by `dDriveOOo` is located on the user's computer, only the `User` is responsible for the security of the data collected.
@@ -43,6 +48,7 @@ Use of the `Supplier` services via `dDriveOOo` may subject you to the data prote
 
 `Supplier` is solely responsible for the security of the data it collects as described in its Policy.
 
+___
 ## Expiration of collected data:
 
 Updating the data collected locally is done each time `dDriveOOo` is used.
@@ -56,5 +62,6 @@ Use of the `Supplier` services via `dDriveOOo` may subject you to the data prote
 `Supplier` is solely responsible for the expiration of the data it collects as described in its Policy.
 
 [1]: <https://prrvchr.github.io/dDriveOOo/img/dDriveOOo.png>
-[2]: <https://prrvchr.github.io/dDriveOOo/source/dDriveOOo/registration/TermsOfUse_en>
-[3]: <https://prrvchr.github.io/dDriveOOo/>
+[2]: <https://prrvchr.github.io/dDriveOOo/source/dDriveOOo/registration/PrivacyPolicy_fr>
+[3]: <https://prrvchr.github.io/dDriveOOo/source/dDriveOOo/registration/TermsOfUse_en>
+[4]: <https://prrvchr.github.io/dDriveOOo/>

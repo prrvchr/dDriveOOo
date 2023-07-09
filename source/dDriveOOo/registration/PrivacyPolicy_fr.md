@@ -1,8 +1,10 @@
-# ![dDriveOOo logo][1] dDriveOOo - Politique de protection des donnée
+# Politique de protection des donnée
 
-**L'utilisation de ce logiciel vous soumet également à nos [Conditions d'utilisation][2].**
+**This [document][2] in English.**
 
-Concernant l'installation, la configuration et l'utilisation, veuillez consulter la [documentation][3].
+**L'utilisation de ce logiciel vous soumet également à nos [Conditions d'utilisation][3].**
+
+Concernant l'installation, la configuration et l'utilisation, veuillez consulter la **[documentation][4]**.
 
 ## Introduction:
 
@@ -15,12 +17,14 @@ Pour plus de simplicité, dans la suite de ce document, on nommera:
 - `Utilisateur`: l'utilisateur du logiciel dDriveOOo.
 - `Fournisseur`: fournisseur de services Internet fournissant des services Internet à `dDriveOOo`.
 
+___
 ## Contact:
 
 Dans tous les cas, il est possible de contacter le responsable du traitement des données à l'adresse suivante:
 
 prrvchr@gmail.com
 
+___
 ## Utilisation de vos données personnelles:
 
 Pour fonctionner, `dDriveOOo` doit conserver des données localement.
@@ -35,6 +39,7 @@ L'utilisation des services du `Fournisseur` au travers de `dDriveOOo` peut vous 
 
 Le `Fournisseur` est seul responsable de l'utilisation des données qu'il collecte, comme décrit dans sa politique de protection des données.
 
+___
 ## Sécurité de vos informations personnelles:
 
 Étant donné que les données collectées par `dDriveOOo` sont situées sur l'ordinateur de l'utilisateur, seul l'`Utilisateur` est responsable de la sécurité des données collectées.
@@ -43,6 +48,7 @@ L'utilisation des services du `Fournisseur` via `dDriveOOo` peut vous soumettre 
 
 Le `Fournisseur` est seul responsable de la sécurité des données qu'il collecte, comme décrit dans sa politique de protection des données.
 
+___
 ## Expiration des données collectées:
 
 La mise à jour des données collectées localement est effectuée chaque fois que `dDriveOOo` est utilisé.
@@ -56,5 +62,6 @@ L'utilisation des services du `Fournisseur` via `dDriveOOo` peut vous soumettre 
 Le `Fournisseur` est seul responsable de l'expiration des données qu'il collecte comme décrit dans sa politique de protection des données.
 
 [1]: <https://prrvchr.github.io/dDriveOOo/img/dDriveOOo.png>
-[2]: <https://prrvchr.github.io/dDriveOOo/source/dDriveOOo/registration/TermsOfUse_fr>
-[3]: <https://prrvchr.github.io/dDriveOOo/README_fr>
+[2]: <https://prrvchr.github.io/dDriveOOo/source/dDriveOOo/registration/PrivacyPolicy_en>
+[3]: <https://prrvchr.github.io/dDriveOOo/source/dDriveOOo/registration/TermsOfUse_fr>
+[4]: <https://prrvchr.github.io/dDriveOOo/README_fr>

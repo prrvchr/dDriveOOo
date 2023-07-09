@@ -1,4 +1,3 @@
-# ![dDriveOOo logo][1] dDriveOOo
 <!--
 ╔════════════════════════════════════════════════════════════════════════════════════╗
 ║                                                                                    ║
@@ -24,17 +23,18 @@
 ║                                                                                    ║
 ╚════════════════════════════════════════════════════════════════════════════════════╝
 -->
+# Documentation
 
 **This [document][2] in English.**
 
-**L'utilisation de ce logiciel vous soumet à nos** [Conditions d'utilisation][3] **et à notre** [Politique de protection des données][4].
+**L'utilisation de ce logiciel vous soumet à nos [Conditions d'utilisation][3] et à notre [Politique de protection des données][4].**
 
-# version [0.0.6][5]
+# version [1.0.0][5]
 
 ## Introduction:
 
-**dDriveOOo** fait partie d'une [Suite][6] d'extensions [LibreOffice][7] et/ou [OpenOffice][8] permettant de vous offrir des services inovants dans ces suites bureautique.  
-Cette extension vous permet de travailler dans LibreOffice / OpenOffice sur vos fichiers Dropbox, même hors ligne.
+**dDriveOOo** fait partie d'une [Suite][6] d'extensions [LibreOffice][7] ~~et/ou [OpenOffice][8]~~ permettant de vous offrir des services inovants dans ces suites bureautique.  
+Cette extension vous permet de travailler dans LibreOffice sur vos fichiers Dropbox, même hors ligne.
 
 Etant un logiciel libre je vous encourage:
 - A dupliquer son [code source][9].
@@ -44,33 +44,30 @@ Etant un logiciel libre je vous encourage:
 Bref, à participer au developpement de cette extension.
 Car c'est ensemble que nous pouvons rendre le Logiciel Libre plus intelligent.
 
+___
 ## Prérequis:
 
-Si vous utilisez **OpenOffice sur Windows** quelle que soit la version, vous êtes sujet au [dysfonctionnement 128569][11]. Je n'ai pas trouvé de solution de contournement, pour l'instant je ne peux que vous conseiller d'installer **LibreOffice**...
+Afin de profiter des dernières versions des bibliothèques Python utilisées dans OAuth2OOo, la version 2 de Python a été abandonnée au profit de **Python 3.8 minimum**.  
+Cela signifie que **OAuth2OOo ne supporte plus OpenOffice et LibreOffice 6.x sous Windows depuis sa version 1.1.0**.
+Je ne peux que vous conseiller **de migrer vers LibreOffice 7.x**.
 
 dDriveOOo utilise une base de données locale [HsqlDB][12] version 2.7.1.  
 HsqlDB étant une base de données écrite en Java, son utilisation nécessite [l'installation et la configuration][13] dans LibreOffice / OpenOffice d'un **JRE version 11 ou ultérieure**.  
 Je vous recommande [Adoptium][14] comme source d'installation de Java.
 
-Si vous utilisez **LibreOffice sous Linux**, vous devez vous assurez de deux choses:
-  - Vous êtes sujet au [dysfonctionnement 139538][15]. Pour contourner le problème, veuillez **désinstaller les paquets** avec les commandes:
-    - `sudo apt remove libreoffice-sdbc-hsqldb` (pour désinstaller le paquet libreoffice-sdbc-hsqldb)
-    - `sudo apt remove libhsqldb1.8.0-java` (pour désinstaller le paquet libhsqldb1.8.0-java)
+Si vous utilisez **LibreOffice sous Linux**, vous êtes sujet au [dysfonctionnement 139538][15]. Pour contourner le problème, veuillez **désinstaller les paquets** avec les commandes:
+- `sudo apt remove libreoffice-sdbc-hsqldb` (pour désinstaller le paquet libreoffice-sdbc-hsqldb)
+- `sudo apt remove libhsqldb1.8.0-java` (pour désinstaller le paquet libhsqldb1.8.0-java)
 
 Si vous souhaitez quand même utiliser la fonctionnalité HsqlDB intégré fournie par LibreOffice, alors installez l'extension [HsqlDBembeddedOOo][16].  
 
-  - Si le paquet python3-cffi-backend est installé alors vous devez **installer le paquet python3-cffi** avec les commandes:
-    - `dpkg -s python3-cffi-backend` (pour savoir si le paquet python3-cffi-backend est installé)
-    - `sudo apt install python3-cffi` (pour installer le paquet python3-cffi si nécessaire)
-
-OpenOffice sous Linux et LibreOffice sous Windows ne sont pas sujets à ces dysfonctionnements.
-
+___
 ## Installation:
 
 Il semble important que le fichier n'ait pas été renommé lors de son téléchargement.  
 Si nécessaire, renommez-le avant de l'installer.
 
-- Installer l'extension ![OAuth2OOo logo][17] **[OAuth2OOo.oxt][18]** version 0.0.6.
+- Installer l'extension ![OAuth2OOo logo][17] **[OAuth2OOo.oxt][18]** version 1.1.0.
 
 Vous devez d'abord installer cette extension, si elle n'est pas déjà installée.
 
@@ -78,10 +75,11 @@ Vous devez d'abord installer cette extension, si elle n'est pas déjà installé
 
 Vous devez installer cette extension, si elle n'est pas déjà installée.
 
-- Installer l'extension ![dDriveOOo logo][1] **[dDriveOOo.oxt][21]** version 0.0.6.
+- Installer l'extension ![dDriveOOo logo][1] **[dDriveOOo.oxt][21]** version 1.0.0.
 
 Redémarrez LibreOffice / OpenOffice après l'installation.
 
+___
 ## Utilisation:
 
 **Ouvrir vos fichiers Dropbox:**
@@ -100,6 +98,7 @@ Les Urls anonymes vous permettent de rester anonyme (votre compte n'apparaît pa
 
 Après avoir autorisé l'application [OAuth2OOo][23] à accéder à vos fichiers Dropbox, vos fichiers Dropbox devraient apparaître!!! normalement  ;-)
 
+___
 ## A été testé avec:
 
 * LibreOffice 7.3.7.2 - Lubuntu 22.04 - OpenJDK-11-JRE (amd64)
@@ -110,10 +109,11 @@ Après avoir autorisé l'application [OAuth2OOo][23] à accéder à vos fichiers
 
 * **Ne fonctionne pas avec OpenOffice sous Windows** voir [dysfonctionnement 128569][11]. N'ayant aucune solution, je vous encourrage d'installer **LibreOffice**.
 
-Je vous encourage en cas de problème :-(  
+Je vous encourage en cas de problème :confused:  
 de créer un [dysfonctionnement][10]  
-J'essaierai de le résoudre ;-)
+J'essaierai de le résoudre :smile:
 
+___
 ## Historique:
 
 ### Ce qui a été fait pour la version 0.0.5:
@@ -142,10 +142,10 @@ Bien que cette fonctionnalité ne soit nécessaire que pour gDriveOOo, elle est 
 - Utilisation du nouveau schéma: **vnd-dropbox://** comme revendiqué par [draft-king-vnd-urlscheme-03.txt][28]
 
 - Aboutissement de la gestion des doublons des noms de fichiers / dossiers par des vues SQL dans HsqlDB:
-  - Une vue [**Twin**][29] regroupant tous les doublons par dossier parent et les ordonnant par date de création, date de modification.
-  - Une vue [**Uri**][30] générant des indexes uniques pour chaque doublon.
-  - Une vue [**Title**][31] générant des nom uniques pour chaque doublon.
-  - Une vue récursive [**Path**][32] pour générer un chemin unique pour chaque fichier/dossier.
+    - Une vue [**Twin**][29] regroupant tous les doublons par dossier parent et les ordonnant par date de création, date de modification.
+    - Une vue [**Uri**][30] générant des indexes uniques pour chaque doublon.
+    - Une vue [**Title**][31] générant des nom uniques pour chaque doublon.
+    - Une vue récursive [**Path**][32] pour générer un chemin unique pour chaque fichier/dossier.
 
 - Création d'un [Provider][33] capable de répondre aux deux types d'Urls supportées (nommées et anonymes).
   Des expressions régulières (regex), déclarées dans le [fichier de configuration de l'UCB][34], sont maintenant utilisées par OpenOffice/LibreOffice pour envoyer les Urls au ContentProvider approprié.
@@ -154,15 +154,15 @@ Bien que cette fonctionnalité ne soit nécessaire que pour gDriveOOo, elle est 
   Bien que cette struct existe déjà dans LibreOffice, sa création était nécessaire afin de rester compatible avec OpenOffice (voir [Demande d'amélioration 128560][37]).
 
 - Modification de l'interface [Replicator][24], afin de permettre:
-  - De choisir l'ordre de synchronisation des données (locales d'abord puis distantes ensuite ou inversement).
-  - La synchronisation des modifications locales par des opérations atomiques effectuées dans l'ordre chronologique pour supporter pleinement le travail hors ligne.  
-  Pour ce faire, trois procédures SQL [GetPushItems][38], [GetPushProperties][39] et [UpdatePushItems][40] sont utilisées pour chaque utilisateur ayant accédé à ses fichiers / dossiers.
+    - De choisir l'ordre de synchronisation des données (locales d'abord puis distantes ensuite ou inversement).
+    - La synchronisation des modifications locales par des opérations atomiques effectuées dans l'ordre chronologique pour supporter pleinement le travail hors ligne.  
+    Pour ce faire, trois procédures SQL [GetPushItems][38], [GetPushProperties][39] et [UpdatePushItems][40] sont utilisées pour chaque utilisateur ayant accédé à ses fichiers / dossiers.
 
 - Réécriture de la [fenêtre des options][41] accessible par : **Outils -> Options -> Internet -> dDriveOOo** afin de permettre :
-  - L'accès aux deux fichiers journaux concernant les activités de l'UCP et du réplicateur de données.
-  - Le choix de l'ordre de synchronisation.
-  - La modification de l'intervalle entre deux synchronisations.
-  - L'accès à la base de données HsqlDB 2.7.1 sous-jacente gérant vos métadonnées Dropbox.
+    - L'accès aux deux fichiers journaux concernant les activités de l'UCP et du réplicateur de données.
+    - Le choix de l'ordre de synchronisation.
+    - La modification de l'intervalle entre deux synchronisations.
+    - L'accès à la base de données HsqlDB 2.7.1 sous-jacente gérant vos métadonnées Dropbox.
 
 - La présence ou l'absence d'une barre oblique finale dans l'Url est maintenant prise en charge.
 

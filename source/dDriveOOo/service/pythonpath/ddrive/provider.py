@@ -58,7 +58,7 @@ from .configuration import g_doc_map
 from .configuration import g_pages
 
 import json
-from . import ijson
+import ijson
 import traceback
 
 
@@ -236,7 +236,16 @@ class Provider(ProviderBase):
             response.close()
 
     def parseUploadLocation(self, response):
-        url =  None
+        return self._parseJsonKey(response, 'link')
+
+    def updateItemId(self, database, oldid, response):
+        newid = self._parseJsonKey(response, 'id')
+        if newid and oldid != newid:
+            database.updateItemId(newid, oldid)
+        return newid
+
+    def _parseJsonKey(self, response, key):
+        result = None
         if response.Ok:
             events = ijson.sendable_list()
             parser = ijson.parse_coro(events)
@@ -244,37 +253,12 @@ class Provider(ProviderBase):
             while iterator.hasMoreElements():
                 parser.send(iterator.nextElement().value)
                 for prefix, event, value in events:
-                    if (prefix, event) == ('link', 'string'):
-                        url = value
+                    if (prefix, event) == (key, 'string'):
+                        result = value
                 del events[:]
             parser.close()
         response.close()
-        return url
-
-    def updateItemId(self, database, oldid, response):
-        if response is not None:
-            if response.Ok:
-                newid = self._parseNewId(response)
-                if newid and oldid != newid:
-                    database.updateItemId(newid, oldid)
-                return newid
-            response.close()
-        return None
-
-    def _parseNewId(self, response):
-        newid = None
-        events = ijson.sendable_list()
-        parser = ijson.parse_coro(events)
-        iterator = response.iterContent(g_chunk, False)
-        while iterator.hasMoreElements():
-            parser.send(iterator.nextElement().value)
-            for prefix, event, value in events:
-                if (prefix, event) == ('id', 'string'):
-                    newid = value
-            del events[:]
-        parser.close()
-        response.close()
-        return newid
+        return result
 
     def mergeNewFolder(self, user, oldid, response):
         item = self._parseNewFolder(response)
