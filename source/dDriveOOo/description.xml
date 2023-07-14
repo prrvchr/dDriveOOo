@@ -30,8 +30,8 @@
         <name lang="en-US">dDriveOOo</name>
     </display-name>
     <icon>
-        <default xlink:href="dDriveOOo/dDriveOOo.png"/>
-        <high-contrast xlink:href="dDriveOOo/dDriveOOo.png"/>
+        <default xlink:href="dDriveOOo/dDriveOOo.svg"/>
+        <high-contrast xlink:href="dDriveOOo/dDriveOOo.svg"/>
     </icon>
     <extension-description>
         <src xlink:href="description/desc_en.txt" lang="en-US"/>
