@@ -36,8 +36,8 @@ from com.sun.star.rest.ParameterType import JSON
 
 from .ucp import Provider as ProviderBase
 
-from .dbtool import currentUnoDateTime
 from .dbtool import currentDateTimeInTZ
+from .dbtool import currentUnoDateTime
 
 from .unotool import getResourceLocation
 
@@ -106,6 +106,9 @@ class Provider(ProviderBase):
         root = self._getRoot(user[-1])
         return user, root
 
+    def initSharedDocuments(self, user, datetime):
+        pass
+
     def parseUserToken(self, response):
         token = None
         events = ijson.sendable_list()
@@ -162,77 +165,75 @@ class Provider(ProviderBase):
         print("Provider.parseItem() 1 Method: %s" % parameter.Name)
         while parameter.hasNextPage():
             response = request.execute(parameter)
-            if not response.Ok:
-                break
-            events = ijson.sendable_list()
-            parser = ijson.parse_coro(events)
-            iterator = response.iterContent(g_chunk, False)
-            while iterator.hasMoreElements():
-                chunk = iterator.nextElement().value
-                print("Provider._parseItem() Content: \n%s" % chunk.decode('utf-8'))
-                parser.send(chunk)
-                for prefix, event, value in events:
-                    print("Provider._parseItem() Prefix: %s - Event: %s - Value: %s" % (prefix, event, value))
-                    if (prefix, event) == ('id', 'string'):
-                        itemid = value
-                    elif (prefix, event) == ('name', 'string'):
-                        name = value
-                    elif (prefix, event) == ('server_modified', 'string'):
-                        created = self.parseDateTime(value)
-                    elif (prefix, event) == ('client_modified', 'string'):
-                        modified = self.parseDateTime(value)
-                del events[:]
-            parser.close()
+            if response.Ok:
+                events = ijson.sendable_list()
+                parser = ijson.parse_coro(events)
+                iterator = response.iterContent(g_chunk, False)
+                while iterator.hasMoreElements():
+                    chunk = iterator.nextElement().value
+                    print("Provider._parseItem() Content: \n%s" % chunk.decode('utf-8'))
+                    parser.send(chunk)
+                    for prefix, event, value in events:
+                        print("Provider._parseItem() Prefix: %s - Event: %s - Value: %s" % (prefix, event, value))
+                        if (prefix, event) == ('id', 'string'):
+                            itemid = value
+                        elif (prefix, event) == ('name', 'string'):
+                            name = value
+                        elif (prefix, event) == ('server_modified', 'string'):
+                            created = self.parseDateTime(value)
+                        elif (prefix, event) == ('client_modified', 'string'):
+                            modified = self.parseDateTime(value)
+                    del events[:]
+                parser.close()
         response.close()
         return itemid, name, created, modified, g_folder, False, True, False, False, False
 
     def parseRootFolder(self, parameter, content):
         return self.parseItems(content.User.Request, parameter, (content.Id, ))
 
-    def parseItems(self, request, parameter, parents=()):
+    def parseItems(self, request, parameter, parents=(), link=None):
+        addchild = rename = True
+        trashed = readonly = versionable = False
         while parameter.hasNextPage():
             cursor = None
             response = request.execute(parameter)
-            if not response.Ok:
-                break
-            events = ijson.sendable_list()
-            parser = ijson.parse_coro(events)
-            iterator = response.iterContent(g_chunk, False)
-            while iterator.hasMoreElements():
-                parser.send(iterator.nextElement().value)
-                for prefix, event, value in events:
-                    if (prefix, event) == ('cursor', 'string'):
-                        parameter.SyncToken = value
-                    elif (prefix, event) == ('has_more', 'boolean'):
-                        if value:
-                            parameter.setNextPage('cursor', parameter.SyncToken, JSON)
-                    elif (prefix, event) == ('entries.item', 'start_map'):
-                        itemid = name = None
-                        created = modified = currentUnoDateTime()
-                        mimetype = g_folder
-                        size = 0
-                        addchild = canrename = True
-                        trashed = readonly = versionable = False
-                        path = None
-                    elif (prefix, event) == ('entries.item.id', 'string'):
-                        itemid = value
-                    elif (prefix, event) == ('entries.item.name', 'string'):
-                        name = value
-                    elif (prefix, event) == ('entries.item.server_modified', 'string'):
-                        created = self.parseDateTime(value)
-                    elif (prefix, event) == ('entries.item.client_modified', 'string'):
-                        modified = self.parseDateTime(value)
-                    elif (prefix, event) == ('entries.item..tag', 'string'):
-                        mimetype = g_folder if value == 'folder' else 'application/octet-stream'
-                    elif (prefix, event) == ('entries.item.size', 'number'):
-                        size = value
-                    elif (prefix, event) == ('entries.item.path_display', 'string'):
-                        if not parents:
-                            path, sep, tmp = value.rpartition('/')
-                    elif (prefix, event) == ('entries.item', 'end_map'):
-                        yield itemid, name, created, modified, mimetype, size, False, True, True, False, False, path, parents
-                del events[:]
-            parser.close()
+            if response.Ok:
+                events = ijson.sendable_list()
+                parser = ijson.parse_coro(events)
+                iterator = response.iterContent(g_chunk, False)
+                while iterator.hasMoreElements():
+                    parser.send(iterator.nextElement().value)
+                    for prefix, event, value in events:
+                        if (prefix, event) == ('cursor', 'string'):
+                            parameter.SyncToken = value
+                        elif (prefix, event) == ('has_more', 'boolean'):
+                            if value:
+                                parameter.setNextPage('cursor', parameter.SyncToken, JSON)
+                        elif (prefix, event) == ('entries.item', 'start_map'):
+                            itemid = name = None
+                            created = modified = currentUnoDateTime()
+                            mimetype = g_folder
+                            size = 0
+                            path = None
+                        elif (prefix, event) == ('entries.item.id', 'string'):
+                            itemid = value
+                        elif (prefix, event) == ('entries.item.name', 'string'):
+                            name = value
+                        elif (prefix, event) == ('entries.item.server_modified', 'string'):
+                            created = self.parseDateTime(value)
+                        elif (prefix, event) == ('entries.item.client_modified', 'string'):
+                            modified = self.parseDateTime(value)
+                        elif (prefix, event) == ('entries.item..tag', 'string'):
+                            mimetype = g_folder if value == 'folder' else 'application/octet-stream'
+                        elif (prefix, event) == ('entries.item.size', 'number'):
+                            size = value
+                        elif (prefix, event) == ('entries.item.path_display', 'string'):
+                            if not parents:
+                                path, sep, tmp = value.rpartition('/')
+                        elif (prefix, event) == ('entries.item', 'end_map'):
+                            yield itemid, name, created, modified, mimetype, size, link, trashed, addchild, rename, readonly, versionable, path, parents
+                    del events[:]
+                parser.close()
             response.close()
 
     def parseUploadLocation(self, response):
