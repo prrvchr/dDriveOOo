@@ -44,18 +44,18 @@ L'utilisation des services du `Fournisseur` au travers de `OAuth2OOo` et/ou `dDr
 Le `Fournisseur` est seul responsable de l'utilisation des données qu'il collecte, comme décrit dans sa Politique de Protection des Données.
 
 ___
-## Sécurité de vos informations personnelles:
+## Nature et étendue des droits sur vos données:
+
+`dDriveOOo` vous permet d'obtenir une copie de vos fichiers Dropbox sur votre `Ordinateur`. En conséquence, `dDriveOOo` revendique au travers de `OAuth2OOo` le droit de **consulter, modifier et supprimer vos fichiers Dropbox**.
+
+___
+## Sécurité des données collectées:
 
 Étant donné que les données collectées par `OAuth2OOo` et/ou `dDriveOOo` sont situées sur l'`Ordinateur`, **seul l'**`Utilisateur` **est responsable de la sécurité des données collectées**.
 
 L'utilisation des services du `Fournisseur` au travers de `OAuth2OOo` et/ou `dDriveOOo` peut vous soumettre à la politique de protection des données du `Fournisseur`. Il incombe à l'`Utilisateur` de consulter ces règles sur le site Web du `Fournisseur`.
 
 Le `Fournisseur` est seul responsable de la sécurité des données qu'il collecte, comme décrit dans sa Politique de Protection des Données.
-
-___
-## Nature et étendue des droits sur les données collectées:
-
-`dDriveOOo` vous permet d'obtenir une copie de vos fichiers Dropbox sur votre `Ordinateur`. En conséquence, `dDriveOOo` revendique au travers de `OAuth2OOo` le droit de **consulter, modifier et supprimer vos fichiers Dropbox**.
 
 ___
 ## Expiration des données collectées:
