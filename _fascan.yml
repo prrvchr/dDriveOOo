@@ -1,0 +1,13 @@
+namespace: dDriveOOo
+output:
+  file_path: ./Fluid-Attacks-Results.csv
+  format: CSV
+working_dir: .
+sast:
+  include:
+    - source/dDriveOOo/service/pythonpath/ddrive/
+    - glob(source/dDriveOOo/service/*.py)
+sca:
+  include:
+    - .
+language: EN
