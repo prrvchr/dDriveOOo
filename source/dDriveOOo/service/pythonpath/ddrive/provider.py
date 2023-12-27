@@ -161,39 +161,13 @@ class Provider(ProviderBase):
         response.close()
         return userid, name, displayname, rootid
 
-    def _parseItem(self, request, parameter):
-        print("Provider.parseItem() 1 Method: %s" % parameter.Name)
-        while parameter.hasNextPage():
-            response = request.execute(parameter)
-            if response.Ok:
-                events = ijson.sendable_list()
-                parser = ijson.parse_coro(events)
-                iterator = response.iterContent(g_chunk, False)
-                while iterator.hasMoreElements():
-                    chunk = iterator.nextElement().value
-                    print("Provider._parseItem() Content: \n%s" % chunk.decode('utf-8'))
-                    parser.send(chunk)
-                    for prefix, event, value in events:
-                        print("Provider._parseItem() Prefix: %s - Event: %s - Value: %s" % (prefix, event, value))
-                        if (prefix, event) == ('id', 'string'):
-                            itemid = value
-                        elif (prefix, event) == ('name', 'string'):
-                            name = value
-                        elif (prefix, event) == ('server_modified', 'string'):
-                            created = self.parseDateTime(value)
-                        elif (prefix, event) == ('client_modified', 'string'):
-                            modified = self.parseDateTime(value)
-                    del events[:]
-                parser.close()
-        response.close()
-        return itemid, name, created, modified, g_folder, False, True, False, False, False
-
     def parseRootFolder(self, parameter, content):
         return self.parseItems(content.User.Request, parameter, (content.Id, ))
 
-    def parseItems(self, request, parameter, parents=(), link=None):
+    def parseItems(self, request, parameter, parents=()):
         addchild = rename = True
         trashed = readonly = versionable = False
+        link = ''
         while parameter.hasNextPage():
             cursor = None
             response = request.execute(parameter)
@@ -214,7 +188,7 @@ class Provider(ProviderBase):
                             created = modified = currentUnoDateTime()
                             mimetype = g_folder
                             size = 0
-                            path = None
+                            path = ''
                         elif (prefix, event) == ('entries.item.id', 'string'):
                             itemid = value
                         elif (prefix, event) == ('entries.item.name', 'string'):
