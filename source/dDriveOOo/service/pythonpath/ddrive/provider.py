@@ -231,7 +231,8 @@ class Provider(ProviderBase):
                             if not parents:
                                 path, sep, tmp = value.rpartition('/')
                         elif (prefix, event) == ('entries.item', 'end_map'):
-                            yield itemid, name, created, modified, mimetype, size, link, trashed, addchild, rename, readonly, versionable, path, parents
+                            if itemid and name:
+                                yield itemid, name, created, modified, mimetype, size, link, trashed, addchild, rename, readonly, versionable, path, parents
                     del events[:]
                 parser.close()
             response.close()
