@@ -83,9 +83,6 @@ class Provider(ProviderBase):
     def Document(self):
         return g_doc_map
     @property
-    def DateTimeFormat(self):
-        return '%Y-%m-%dT%H:%M:%SZ'
-    @property
     def Folder(self):
         return self._folder
     @property
