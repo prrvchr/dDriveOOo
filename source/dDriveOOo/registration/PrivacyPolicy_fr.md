@@ -73,6 +73,6 @@ Le `Fournisseur` est seul responsable de l'expiration des données qu'il collect
 [1]: <https://prrvchr.github.io/dDriveOOo/source/dDriveOOo/registration/PrivacyPolicy_en>
 [2]: <https://prrvchr.github.io/dDriveOOo/source/dDriveOOo/registration/TermsOfUse_fr>
 [3]: <https://prrvchr.github.io/dDriveOOo/README_fr>
-[4]: <https://github.com/prrvchr/OAuth2OOo/raw/master/OAuth2OOo.oxt>
-[5]: <https://github.com/prrvchr/dDriveOOo/raw/master/dDriveOOo.oxt>
+[4]: <https://github.com/prrvchr/OAuth2OOo/releases/latest/download/OAuth2OOo.oxt>
+[5]: <https://github.com/prrvchr/dDriveOOo/releases/latest/download/dDriveOOo.oxt>
 [6]: <https://prrvchr.github.io/OAuth2OOo/source/OAuth2OOo/registration/PrivacyPolicy_fr>

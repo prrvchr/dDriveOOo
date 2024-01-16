@@ -219,17 +219,16 @@ class Provider(ProviderBase):
 
     def _parseJsonKey(self, response, key):
         result = None
-        if response.Ok:
-            events = ijson.sendable_list()
-            parser = ijson.parse_coro(events)
-            iterator = response.iterContent(g_chunk, False)
-            while iterator.hasMoreElements():
-                parser.send(iterator.nextElement().value)
-                for prefix, event, value in events:
-                    if (prefix, event) == (key, 'string'):
-                        result = value
-                del events[:]
-            parser.close()
+        events = ijson.sendable_list()
+        parser = ijson.parse_coro(events)
+        iterator = response.iterContent(g_chunk, False)
+        while iterator.hasMoreElements():
+            parser.send(iterator.nextElement().value)
+            for prefix, event, value in events:
+                if (prefix, event) == (key, 'string'):
+                    result = value
+            del events[:]
+        parser.close()
         response.close()
         return result
 

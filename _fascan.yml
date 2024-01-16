@@ -5,9 +5,10 @@ output:
 working_dir: .
 sast:
   include:
-    - /source/dDriveOOo/service/pythonpath/ddrive/
-    - glob(/source/dDriveOOo/service/*.py)
+    - glob(source/dDriveOOo/service/*.py)
+    - glob(source/dDriveOOo/service/pythonpath/ddrive/*)
 sca:
   include:
     - .
 language: EN
+strict: true

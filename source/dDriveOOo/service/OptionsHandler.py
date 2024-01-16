@@ -30,13 +30,18 @@
 import uno
 import unohelper
 
+from com.sun.star.logging.LogLevel import SEVERE
+
 from com.sun.star.lang import XServiceInfo
 
 from com.sun.star.awt import XContainerWindowEventHandler
 
 from ddrive import OptionsManager
 
+from ddrive import getLogger
+
 from ddrive import g_identifier
+from ddrive import g_defaultlog
 
 import traceback
 
@@ -51,6 +56,7 @@ class OptionsHandler(unohelper.Base,
     def __init__(self, ctx):
         self._ctx = ctx
         self._manager = None
+        self._logger = getLogger(ctx, g_defaultlog)
 
     # XContainerWindowEventHandler
     def callHandlerMethod(self, window, event, method):
@@ -58,7 +64,7 @@ class OptionsHandler(unohelper.Base,
             handled = False
             if method == 'external_event':
                 if event == 'initialize':
-                    self._manager = OptionsManager(self._ctx, window)
+                    self._manager = OptionsManager(self._ctx, window, self._logger)
                     handled = True
                 elif event == 'ok':
                     self._manager.saveSetting()
@@ -86,8 +92,7 @@ class OptionsHandler(unohelper.Base,
                 handled = True
             return handled
         except Exception as e:
-            msg = f'OptionsHandler.callHandlerMethod() Error: {e}\n{traceback.format_exc()}'
-            print(msg)
+            self._logger.logprb(SEVERE, 'OptionsHandler', 'callHandlerMethod()', 141, e, traceback.format_exc())
 
     def getSupportedMethodNames(self):
         return ('external_event',
