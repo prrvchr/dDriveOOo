@@ -274,6 +274,6 @@ Although this functionality is only needed for gDriveOOo, it is implemented glob
 [44]: <https://github.com/prrvchr/dDriveOOo/blob/master/uno/lib/uno/ucb/dbqueries.py#L494>
 [45]: <https://github.com/prrvchr/dDriveOOo/tree/master/uno/lib/uno/options/ucb>
 [46]: <https://github.com/prrvchr/gDriveOOo/issues/12>
-[47]: <https://github.com/prrvchr/mDriveOOo/tree/master/source/mDriveOOo/requirements.txt>
+[47]: <https://github.com/prrvchr/dDriveOOo/releases/latest/download/requirements.txt>
 [48]: <https://peps.python.org/pep-0508/>
 [49]: <https://prrvchr.github.io/mDriveOOo/#requirement>
