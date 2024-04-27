@@ -35,6 +35,7 @@ from com.sun.star.ucb import IllegalIdentifierException
 from com.sun.star.rest.ParameterType import JSON
 
 from .ucp import Provider as ProviderBase
+from .ucp import g_ucboffice
 
 from .dbtool import currentDateTimeInTZ
 from .dbtool import currentUnoDateTime
@@ -51,13 +52,9 @@ from .configuration import g_userfields
 from .configuration import g_drivefields
 from .configuration import g_itemfields
 from .configuration import g_chunk
-from .configuration import g_folder
-from .configuration import g_office
-from .configuration import g_link
-from .configuration import g_doc_map
+from .configuration import g_ucpfolder
 from .configuration import g_pages
 
-import json
 import ijson
 import traceback
 
@@ -76,18 +73,6 @@ class Provider(ProviderBase):
     @property
     def UploadUrl(self):
         return g_upload
-    @property
-    def Office(self):
-        return g_office
-    @property
-    def Document(self):
-        return g_doc_map
-    @property
-    def Folder(self):
-        return self._folder
-    @property
-    def Link(self):
-        return self._link
 
     def getFirstPullRoots(self, user):
         return (user.RootId, )
@@ -135,7 +120,7 @@ class Provider(ProviderBase):
 
     def _getRoot(self, rootid):
         timestamp = currentUnoDateTime()
-        return rootid, 'Homework', timestamp, timestamp, g_folder, False, True, False, False, False
+        return rootid, timestamp, timestamp
 
     def _parseUser(self, response):
         userid = name = displayname = rootid = None
@@ -183,7 +168,7 @@ class Provider(ProviderBase):
                         elif (prefix, event) == ('entries.item', 'start_map'):
                             itemid = name = None
                             created = modified = currentUnoDateTime()
-                            mimetype = g_folder
+                            mimetype = g_ucpfolder
                             size = 0
                             path = ''
                         elif (prefix, event) == ('entries.item.id', 'string'):
@@ -195,7 +180,7 @@ class Provider(ProviderBase):
                         elif (prefix, event) == ('entries.item.client_modified', 'string'):
                             modified = self.parseDateTime(value)
                         elif (prefix, event) == ('entries.item..tag', 'string'):
-                            mimetype = g_folder if value == 'folder' else 'application/octet-stream'
+                            mimetype = g_ucpfolder if value == 'folder' else 'application/octet-stream'
                         elif (prefix, event) == ('entries.item.size', 'number'):
                             size = value
                         elif (prefix, event) == ('entries.item.path_display', 'string'):
