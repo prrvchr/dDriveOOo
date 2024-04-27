@@ -46,16 +46,15 @@ g_pages = 10
 # Data chunk: 327680 (320Ko) is the Request iter_content() buffer_size, must be a multiple of 64
 g_chunk = 320 * 1024
 
-g_office = 'application/vnd.oasis.opendocument'
-g_folder = 'application/vnd.dropbox-apps.folder'
-g_link = 'application/vnd.dropbox-apps.link'
+g_ucpfolder = 'application/vnd.dropbox-apps.folder'
+g_ucplink   = 'application/vnd.dropbox-apps.link'
+
 g_doc_map = {'application/vnd.microsoft-apps.document':     'application/vnd.oasis.opendocument.text',
              'application/vnd.microsoft-apps.spreadsheet':  'application/x-vnd.oasis.opendocument.spreadsheet',
              'application/vnd.microsoft-apps.presentation': 'application/vnd.oasis.opendocument.presentation',
              'application/vnd.microsoft-apps.drawing':      'application/pdf'}
 
 g_cache = 20
-g_admin = False
 
 # The URL separator
 g_separator = '/'
