@@ -57,6 +57,7 @@ from .configuration import g_pages
 
 import ijson
 import traceback
+from mutagen._senf import sep
 
 
 class Provider(ProviderBase):
@@ -144,9 +145,9 @@ class Provider(ProviderBase):
         return userid, name, displayname, rootid
 
     def parseRootFolder(self, parameter, content):
-        return self.parseItems(content.User.Request, parameter, (content.Id, ))
+        return self.parseItems(content.User.Request, parameter, content.User.RootId)
 
-    def parseItems(self, request, parameter, parents=()):
+    def parseItems(self, request, parameter, rootid):
         addchild = rename = True
         trashed = readonly = versionable = False
         link = ''
@@ -166,11 +167,11 @@ class Provider(ProviderBase):
                             if value:
                                 parameter.setNextPage('cursor', parameter.SyncToken, JSON)
                         elif (prefix, event) == ('entries.item', 'start_map'):
-                            itemid = name = None
+                            itemid = name = path = None
+                            parents = ()
                             created = modified = currentUnoDateTime()
                             mimetype = g_ucpfolder
                             size = 0
-                            path = ''
                         elif (prefix, event) == ('entries.item.id', 'string'):
                             itemid = value
                         elif (prefix, event) == ('entries.item.name', 'string'):
@@ -184,11 +185,14 @@ class Provider(ProviderBase):
                         elif (prefix, event) == ('entries.item.size', 'number'):
                             size = value
                         elif (prefix, event) == ('entries.item.path_display', 'string'):
-                            if not parents:
-                                path, sep, tmp = value.rpartition('/')
+                            part1, sep, part2 = value.rpartition('/')
+                            if part1:
+                                path = part1
+                            else:
+                                parents = (rootid, )
                         elif (prefix, event) == ('entries.item', 'end_map'):
                             if itemid and name:
-                                yield itemid, name, created, modified, mimetype, size, link, trashed, addchild, rename, readonly, versionable, path, parents
+                                yield itemid, name, created, modified, mimetype, size, link, trashed, addchild, rename, readonly, versionable, parents, path
                     del events[:]
                 parser.close()
             response.close()
