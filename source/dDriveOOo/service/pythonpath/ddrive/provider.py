@@ -200,6 +200,7 @@ class Provider(ProviderBase):
         newid = self._parseJsonKey(response, 'id')
         if newid and oldid != newid:
             database.updateItemId(newid, oldid)
+            self.updateNewItemId(oldid, newid)
         return newid
 
     def _parseJsonKey(self, response, key):
