@@ -52,8 +52,8 @@ from .configuration import g_userfields
 from .configuration import g_drivefields
 from .configuration import g_itemfields
 from .configuration import g_chunk
-from .configuration import g_ucpfolder
 from .configuration import g_pages
+from .configuration import g_ucpfolder
 
 import ijson
 import traceback
