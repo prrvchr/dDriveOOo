@@ -29,7 +29,7 @@
 
 **L'utilisation de ce logiciel vous soumet à nos [Conditions d'utilisation][4] et à notre [Politique de protection des données][5].**
 
-# version [1.1.2][6]
+# version [1.1.3][6]
 
 ## Introduction:
 
@@ -235,7 +235,15 @@ Bien que cette fonctionnalité ne soit nécessaire que pour gDriveOOo, elle est 
 - L'extension vous demandera d'installer les extensions OAuth2OOo et jdbcDriverOOo en version respectivement 1.3.4 et 1.3.2 minimum.
 - De nombreuses corrections.
 
-### Que reste-t-il à faire pour la version 1.1.2:
+### Ce qui a été fait pour la version 1.1.3:
+
+- Mise à jour du paquet [Python python-dateutil][53] vers la version 2.9.0.post0.
+- Mise à jour du paquet [Python ijson][54] vers la version 3.3.0.
+- Mise à jour du paquet [Python packaging][55] vers la version 24.1.
+- Mise à jour du paquet [Python setuptools][56] vers la version 72.1.0 afin de répondre à l'[alerte de sécurité Dependabot][57].
+- L'extension vous demandera d'installer les extensions OAuth2OOo et jdbcDriverOOo en version respectivement 1.3.6 et 1.4.2 minimum.
+
+### Que reste-t-il à faire pour la version 1.1.3:
 
 - Ajouter de nouvelles langue pour l'internationalisation...
 
@@ -246,7 +254,7 @@ Bien que cette fonctionnalité ne soit nécessaire que pour gDriveOOo, elle est 
 [3]: <https://prrvchr.github.io/dDriveOOo>
 [4]: <https://prrvchr.github.io/dDriveOOo/source/dDriveOOo/registration/TermsOfUse_fr>
 [5]: <https://prrvchr.github.io/dDriveOOo/source/dDriveOOo/registration/PrivacyPolicy_fr>
-[6]: <https://prrvchr.github.io/dDriveOOo/README_fr#ce-qui-a-%C3%A9t%C3%A9-fait-pour-la-version-110>
+[6]: <https://prrvchr.github.io/dDriveOOo/README_fr#ce-qui-a-%C3%A9t%C3%A9-fait-pour-la-version-113>
 [7]: <https://prrvchr.github.io/README_fr>
 [8]: <https://fr.libreoffice.org/download/telecharger-libreoffice/>
 [9]: <https://www.openoffice.org/fr/Telecharger/>
@@ -267,7 +275,7 @@ Bien que cette fonctionnalité ne soit nécessaire que pour gDriveOOo, elle est 
 [24]: <https://img.shields.io/github/v/tag/prrvchr/jdbcDriverOOo?label=latest#right>
 [25]: <img/dDriveOOo.svg#middle>
 [26]: <https://github.com/prrvchr/dDriveOOo/releases/latest/download/dDriveOOo.oxt>
-[27]: <https://img.shields.io/github/downloads/prrvchr/dDriveOOo/latest/total?label=v1.1.2#right>
+[27]: <https://img.shields.io/github/downloads/prrvchr/dDriveOOo/latest/total?label=v1.1.3#right>
 [28]: <https://bz.apache.org/ooo/show_bug.cgi?id=128569>
 [29]: <https://github.com/prrvchr/dDriveOOo/blob/master/uno/lib/uno/ucb/replicator.py>
 [30]: <https://github.com/prrvchr/dDriveOOo/blob/master/uno/lib/uno/ucb/database.py>
@@ -293,3 +301,8 @@ Bien que cette fonctionnalité ne soit nécessaire que pour gDriveOOo, elle est 
 [50]: <https://bugs.documentfoundation.org/show_bug.cgi?id=159988>
 [51]: <https://github.com/prrvchr/dDriveOOo/tree/master/uno/lib/uno/ucb/hsqldb>
 [52]: <https://github.com/prrvchr/dDriveOOo/blob/master/uno/lib/uno/ucb/dbqueries.py#L111>
+[53]: <https://pypi.org/project/python-dateutil/>
+[54]: <https://pypi.org/project/ijson/>
+[55]: <https://pypi.org/project/packaging/>
+[56]: <https://pypi.org/project/setuptools/>
+[57]: <https://github.com/prrvchr/dDriveOOo/security/dependabot/1>
