@@ -48,7 +48,7 @@
             <value xml:lang="fr-FR">dDriveOOo</value>
           </prop>
           <prop oor:name="OptionsPage">
-            <value>%origin%/dDriveOOo/OptionsDialog.xdl</value>
+            <value>%origin%/dialogs/OptionsDialog.xdl</value>
           </prop>
           <prop oor:name="EventHandlerService">
             <value>io.github.prrvchr.dDriveOOo.OptionsHandler</value>

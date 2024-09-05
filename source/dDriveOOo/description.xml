@@ -3,7 +3,7 @@
   xmlns="http://openoffice.org/extensions/description/2006"
   xmlns:d="http://openoffice.org/extensions/description/2006"
   xmlns:xlink="http://www.w3.org/1999/xlink">
-    <version value="1.1.3"/>
+    <version value="1.1.4"/>
     <identifier value="io.github.prrvchr.dDriveOOo"/>
     <platform value="all"/>
     <dependencies>
@@ -30,8 +30,8 @@
         <name lang="en-US">dDriveOOo</name>
     </display-name>
     <icon>
-        <default xlink:href="dDriveOOo/dDriveOOo.svg"/>
-        <high-contrast xlink:href="dDriveOOo/dDriveOOo.svg"/>
+        <default xlink:href="img/dDriveOOo.svg"/>
+        <high-contrast xlink:href="img/dDriveOOo.svg"/>
     </icon>
     <extension-description>
         <src xlink:href="description/desc_en.txt" lang="en-US"/>
