@@ -55,6 +55,7 @@ from .configuration import g_chunk
 from .configuration import g_pages
 from .configuration import g_ucpfolder
 
+import json
 import ijson
 import traceback
 from mutagen._senf import sep
@@ -198,29 +199,41 @@ class Provider(ProviderBase):
             response.close()
 
     def parseUploadLocation(self, response):
-        return self._parseJsonKey(response, 'link')
+        location = response.getJson().getString('link')
+        response.close()
+        return location
+
+    def uploadFile(self, code, user, item, data, created, chunk, retry, delay, new=False):
+        newid = None
+        method = 'getUploadNewFile' if new else 'getUploadFile'
+        parameter = self.getRequestParameter(user.Request, method, data)
+        url = self.getTargetUrl(item)
+        print("Provider.uploadFile() 1 Url: %s" % (url, ))
+        #stream = self._sf.openFileRead(url)
+        parameter.DataUrl = url
+        response = user.Request.execute(parameter)
+        print("Provider.uploadFile() 2 StatusCode: %s" % (response.StatusCode, ))
+        if not response.Ok:
+            args = code, parameter.Name, data.get('Name'), response.Text
+            response.close()
+        elif new:
+            newid = self.updateItemId(user.DataBase, item, response)
+            args = code + 3, data.get('Name'), created, data.get('Size')
+        else:
+            response.close()
+            newid = item
+            args = code + 4, data.get('Name'), created, data.get('Size')
+        #stream.closeInput()
+        print("Provider.uploadFile() 3 Text: %s" % (response.Text, ))
+        return newid, args
 
     def updateItemId(self, database, oldid, response):
-        newid = self._parseJsonKey(response, 'id')
+        newid = response.getJson().getString('id')
+        response.close()
         if newid and oldid != newid:
             database.updateItemId(newid, oldid)
             self.updateNewItemId(oldid, newid)
         return newid
-
-    def _parseJsonKey(self, response, key):
-        result = None
-        events = ijson.sendable_list()
-        parser = ijson.parse_coro(events)
-        iterator = response.iterContent(g_chunk, False)
-        while iterator.hasMoreElements():
-            parser.send(iterator.nextElement().value)
-            for prefix, event, value in events:
-                if (prefix, event) == (key, 'string'):
-                    result = value
-            del events[:]
-        parser.close()
-        response.close()
-        return result
 
     def mergeNewFolder(self, user, oldid, response):
         item = self._parseNewFolder(response)
@@ -318,7 +331,7 @@ class Provider(ProviderBase):
         elif method == 'createNewFolder':
             parameter.Method = 'POST'
             parameter.Url += '/files/create_folder_v2'
-            parameter.setJson('path', data.get('Path') + '/' + data.get('Title'))
+            parameter.setJson('path', data.get('Path') + data.get('Title'))
 
         elif method == 'createNewFile':
             parameter.Method = 'POST'
@@ -326,24 +339,51 @@ class Provider(ProviderBase):
             parameter.setJson('title', data.get('Title'))
             parameter.setJson('destination', data.get('Path'))
 
+        # For parameter see: https://www.dropbox.com/developers/documentation/http/documentation#files-upload
         elif method == 'getUploadLocation':
             parameter.Method = 'POST'
             parameter.Url += '/files/get_temporary_upload_link'
-            parameter.setJson('commit_info/path', data.get('Id'))
+            parameter.setJson('commit_info/path', data.get('Path') + data.get('Title'))
             parameter.setJson('commit_info/mode', 'overwrite')
-            parameter.setJson('commit_info/mute', True)
+            parameter.setJson('duration', 3600)
 
+        # For parameter see: https://www.dropbox.com/developers/documentation/http/documentation#files-upload
         elif method == 'getNewUploadLocation':
             parameter.Method = 'POST'
             parameter.Url += '/files/get_temporary_upload_link'
-            parameter.setJson('commit_info/path', data.get('Path') + '/' + data.get('Title'))
+            parameter.setJson('commit_info/path', data.get('Path') + data.get('Title'))
             parameter.setJson('commit_info/mode', 'add')
-            parameter.setJson('commit_info/mute', True)
+            parameter.setJson('duration', 3600)
 
         elif method == 'getUploadStream':
             parameter.Method = 'POST'
             parameter.Url = data
             parameter.setHeader('Content-Type', 'application/octet-stream')
 
+        elif method == 'getUploadFile':
+            parameter.Url = g_upload + '/files/upload'
+            parameter.setHeader('Accept', '')
+            parameter.setHeader('Accept-Encoding', '')
+            parameter.setHeader('Connection', '')
+            parameter.setHeader('User-Agent', '')
+            parameter.setHeader('Content-Type', 'application/octet-stream')
+            parameter.setHeader('Dropbox-API-Arg', self._getUploadArgs(data, False))
+            print("Provider.getUploadFile() Header: %s" % (parameter.Headers, ))
+            print("Provider.getUploadFile() Url: %s" % (parameter.Url, ))
+
+        elif method == 'getUploadNewFile':
+            parameter.Url = g_upload + '/files/upload'
+            parameter.setHeader('Content-Type', 'application/octet-stream')
+            parameter.setHeader('Dropbox-API-Arg', self._getUploadArgs(data, True))
+            print("Provider.getUploadNewFile() Header: %s" % (parameter.Headers, ))
+            print("Provider.getUploadNewFile() Url: %s" % (parameter.Url, ))
+
         return parameter
 
+    def _getUploadArgs(self, data, new):
+        args = {'mode': 'add' if new else 'overwrite',
+                'path': data.get('Path') + data.get('Title') if new else data.get('Id'),
+                'autorename': False,
+                'mute': False,
+                'strict_conflict': False}
+        return json.dumps(args, separators=(',', ':'))
