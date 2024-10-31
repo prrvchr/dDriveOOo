@@ -203,30 +203,6 @@ class Provider(ProviderBase):
         response.close()
         return location
 
-    def uploadFile(self, code, user, item, data, created, chunk, retry, delay, new=False):
-        newid = None
-        method = 'getUploadNewFile' if new else 'getUploadFile'
-        parameter = self.getRequestParameter(user.Request, method, data)
-        url = self.getTargetUrl(item)
-        print("Provider.uploadFile() 1 Url: %s" % (url, ))
-        #stream = self._sf.openFileRead(url)
-        parameter.DataUrl = url
-        response = user.Request.execute(parameter)
-        print("Provider.uploadFile() 2 StatusCode: %s" % (response.StatusCode, ))
-        if not response.Ok:
-            args = code, parameter.Name, data.get('Name'), response.Text
-            response.close()
-        elif new:
-            newid = self.updateItemId(user.DataBase, item, response)
-            args = code + 3, data.get('Name'), created, data.get('Size')
-        else:
-            response.close()
-            newid = item
-            args = code + 4, data.get('Name'), created, data.get('Size')
-        #stream.closeInput()
-        print("Provider.uploadFile() 3 Text: %s" % (response.Text, ))
-        return newid, args
-
     def updateItemId(self, database, oldid, response):
         newid = response.getJson().getString('id')
         response.close()
@@ -358,32 +334,7 @@ class Provider(ProviderBase):
         elif method == 'getUploadStream':
             parameter.Method = 'POST'
             parameter.Url = data
+            parameter.NoAuth = True
             parameter.setHeader('Content-Type', 'application/octet-stream')
-
-        elif method == 'getUploadFile':
-            parameter.Url = g_upload + '/files/upload'
-            parameter.setHeader('Accept', '')
-            parameter.setHeader('Accept-Encoding', '')
-            parameter.setHeader('Connection', '')
-            parameter.setHeader('User-Agent', '')
-            parameter.setHeader('Content-Type', 'application/octet-stream')
-            parameter.setHeader('Dropbox-API-Arg', self._getUploadArgs(data, False))
-            print("Provider.getUploadFile() Header: %s" % (parameter.Headers, ))
-            print("Provider.getUploadFile() Url: %s" % (parameter.Url, ))
-
-        elif method == 'getUploadNewFile':
-            parameter.Url = g_upload + '/files/upload'
-            parameter.setHeader('Content-Type', 'application/octet-stream')
-            parameter.setHeader('Dropbox-API-Arg', self._getUploadArgs(data, True))
-            print("Provider.getUploadNewFile() Header: %s" % (parameter.Headers, ))
-            print("Provider.getUploadNewFile() Url: %s" % (parameter.Url, ))
 
         return parameter
-
-    def _getUploadArgs(self, data, new):
-        args = {'mode': 'add' if new else 'overwrite',
-                'path': data.get('Path') + data.get('Title') if new else data.get('Id'),
-                'autorename': False,
-                'mute': False,
-                'strict_conflict': False}
-        return json.dumps(args, separators=(',', ':'))

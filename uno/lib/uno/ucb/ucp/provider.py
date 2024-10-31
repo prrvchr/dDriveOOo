@@ -300,19 +300,14 @@ class Provider(object):
             args = code, parameter.Name, data.get('Name'), response.Text
             response.close()
         else:
-            print("Provider.uploadFile() 1 response text: %s" % (response.Text, ))
             location = self.parseUploadLocation(response)
-            print("Provider.uploadFile() 2 location: %s" % (location, ))
             if location is None:
                 args = code + 1, parameter.Name, data.get('Name')
             else:
-                parameter = self.getRequestParameter(user.Request, 'getUploadStream', data)
+                parameter = self.getRequestParameter(user.Request, 'getUploadStream', location)
                 url = self.getTargetUrl(item)
-                print("Provider.uploadFile() 3 url: %s" % (url, ))
-                print("Provider.uploadFile() 4 chunk: %s" % (chunk, ))
                 response = user.Request.upload(parameter, url, chunk, retry, delay)
                 if not response.Ok:
-                    print("Provider.uploadFile() 5 Status: %s" % (response.StatusCode, ))
                     args = code + 2, parameter.Name, data.get('Name'), response.Text
                     response.close()
                 elif new:
