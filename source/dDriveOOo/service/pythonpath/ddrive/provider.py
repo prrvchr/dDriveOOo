@@ -212,10 +212,11 @@ class Provider(ProviderBase):
         return newid
 
     def mergeNewFolder(self, user, oldid, response):
-        item = self._parseNewFolder(response)
-        if all(item):
-            return user.DataBase.updateNewItemId(oldid, *item)
-        return None
+        newid = oldid
+        items = self._parseNewFolder(response)
+        if all(items):
+            newid = user.DataBase.updateNewItemId(user.Id, oldid, *items)
+        return newid
 
     def _parseNewFolder(self, response):
         newid = created = modified = None

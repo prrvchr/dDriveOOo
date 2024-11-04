@@ -157,7 +157,8 @@ class Provider(object):
         return page, count, parameter.SyncToken
 
     def initSharedDocuments(self, user, datetime):
-        pass # You must implement this method in Provider to be able to handle Shared Documents
+        # You must implement this method in Provider to be able to handle Shared Documents
+        pass
 
     def pullUser(self, user):
         timestamp = currentDateTimeInTZ()

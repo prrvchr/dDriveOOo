@@ -254,7 +254,8 @@ Although this functionality is only needed for gDriveOOo, it is implemented glob
 
 ### What has been done for version 1.1.5:
 
-- Fixed HTTP request parameters to allow updating files on Dropbox servers.
+- Fixed HTTP query parameters preventing files from being updated on Dropbox servers.
+- Fixed a SQL query preventing a new folder from being created correctly.
 - The extension will ask you to install the OAuth2OOo and jdbcDriverOOo extensions in versions 1.3.8 and 1.4.6 respectively minimum.
 - Modification of the extension options accessible via: **Tools -> Options... -> Internet -> dDriveOOo** in order to comply with the new graphic charter.
 
