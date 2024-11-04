@@ -256,6 +256,7 @@ Bien que cette fonctionnalité ne soit nécessaire que pour gDriveOOo, elle est 
 
 - Correction des paramètres de requête HTTP empêchant la mise à jour des fichiers sur les serveurs Dropbox.
 - Correction d'une requête SQL empêchant la création correcte d'un nouveau dossier.
+- La désactivation de la réplication des données dans les options d'extension affichera un message explicite dans le journal du réplicateur.
 - L'extension vous demandera d'installer les extensions OAuth2OOo et jdbcDriverOOo en version respectivement 1.3.8 et 1.4.6 minimum.
 - Modification des options de l'extension accessibles via : **Outils -> Options... -> Internet -> dDriveOOo** afin de respecter la nouvelle charte graphique.
 

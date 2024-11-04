@@ -212,7 +212,7 @@ class Provider(ProviderBase):
         return newid
 
     def mergeNewFolder(self, user, oldid, response):
-        newid = oldid
+        newid = None
         items = self._parseNewFolder(response)
         if all(items):
             newid = user.DataBase.updateNewItemId(user.Id, oldid, *items)
