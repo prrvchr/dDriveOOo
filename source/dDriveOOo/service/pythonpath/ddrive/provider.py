@@ -30,6 +30,8 @@
 import uno
 import unohelper
 
+from com.sun.star.logging.LogLevel import INFO
+
 from com.sun.star.ucb import IllegalIdentifierException
 
 from com.sun.star.rest.ParameterType import JSON
@@ -64,92 +66,43 @@ from mutagen._senf import sep
 class Provider(ProviderBase):
 
     @property
-    def Name(self):
-        return g_provider
+    def BaseUrl(self):
+        return g_url
     @property
     def Host(self):
         return g_host
     @property
-    def BaseUrl(self):
-        return g_url
+    def Name(self):
+        return g_provider
     @property
     def UploadUrl(self):
         return g_upload
 
+    # Must be implemented method
+    def getDocumentLocation(self, user, item):
+        # XXX: Nothing to do here
+        return item
+
     def getFirstPullRoots(self, user):
         return (user.RootId, )
-
-    def initUser(self, database, user, token):
-        # FIXME: Some APIs like Dropbox allow to have the token during the firstPull
-        #token = self.getUserToken(user)
-        if database.updateToken(user.Id, token):
-            user.setToken(token)
 
     def getUser(self, source, request, name):
         user = self._getUser(source, request, name)
         root = self._getRoot(user[-1])
         return user, root
 
-    def initSharedDocuments(self, user, datetime):
-        pass
+    def mergeNewFolder(self, user, oldid, response):
+        newid = None
+        items = self._parseNewFolder(response)
+        if all(items):
+            newid = user.DataBase.updateNewItemId(user.Id, oldid, *items)
+        return newid
 
-    def parseUserToken(self, response):
-        token = None
-        events = ijson.sendable_list()
-        parser = ijson.parse_coro(events)
-        iterator = response.iterContent(g_chunk, False)
-        while iterator.hasMoreElements():
-            parser.send(iterator.nextElement().value)
-            for prefix, event, value in events:
-                if (prefix, event) == ('cursor', 'string'):
-                    token = value
-            del events[:]
-        parser.close()
-        return token
-
-    def getDocumentLocation(self, content):
-        # FIXME: This method being also called by the replicator,
-        # FIXME: we must provide a dictionary
-        return content.MetaData
-
-    def _getUser(self, source, request, name):
-        parameter = self.getRequestParameter(request, 'getUser')
-        response = request.execute(parameter)
-        if not response.Ok:
-            msg = self._logger.resolveString(403, name)
-            raise IllegalIdentifierException(msg, source)
-        return self._parseUser(response)
-
-    def _getRoot(self, rootid):
-        timestamp = currentUnoDateTime()
-        return rootid, timestamp, timestamp
-
-    def _parseUser(self, response):
-        userid = name = displayname = rootid = None
-        events = ijson.sendable_list()
-        parser = ijson.parse_coro(events)
-        iterator = response.iterContent(g_chunk, False)
-        while iterator.hasMoreElements():
-            parser.send(iterator.nextElement().value)
-            for prefix, event, value in events:
-                if (prefix, event) == ('account_id', 'string'):
-                    userid = value
-                elif (prefix, event) == ('email', 'string'):
-                    name = value
-                elif (prefix, event) == ('name.display_name', 'string'):
-                    displayname = value
-                elif (prefix, event) == ('root_info.root_namespace_id', 'string'):
-                    rootid = value
-            del events[:]
-        parser.close()
-        response.close()
-        return userid, name, displayname, rootid
-
-    def parseRootFolder(self, parameter, content):
+    def parseFolder(self, parameter, content):
         return self.parseItems(content.User.Request, parameter, content.User.RootId)
 
     def parseItems(self, request, parameter, rootid):
-        addchild = rename = True
+        addchild = canrename = True
         trashed = readonly = versionable = False
         link = ''
         while parameter.hasNextPage():
@@ -193,7 +146,20 @@ class Provider(ProviderBase):
                                 parents = (rootid, )
                         elif (prefix, event) == ('entries.item', 'end_map'):
                             if itemid and name:
-                                yield itemid, name, created, modified, mimetype, size, link, trashed, addchild, rename, readonly, versionable, parents, path
+                                yield {'Id': itemid,
+                                       'Name': name,
+                                       'DateCreated': created,
+                                       'DateModified': modified,
+                                       'MediaType': mimetype,
+                                       'Size': size,
+                                       'Link': link,
+                                       'Trashed': trashed,
+                                       'CanAddChild': addchild,
+                                       'CanRename': canrename,
+                                       'IsReadOnly': readonly,
+                                       'IsVersionable': versionable,
+                                       'Parents': parents,
+                                       'Path': path}
                     del events[:]
                 parser.close()
             response.close()
@@ -203,20 +169,41 @@ class Provider(ProviderBase):
         response.close()
         return location
 
-    def updateItemId(self, database, oldid, response):
+    def parseUserToken(self, response):
+        token = None
+        events = ijson.sendable_list()
+        parser = ijson.parse_coro(events)
+        iterator = response.iterContent(g_chunk, False)
+        while iterator.hasMoreElements():
+            parser.send(iterator.nextElement().value)
+            for prefix, event, value in events:
+                if (prefix, event) == ('cursor', 'string'):
+                    token = value
+            del events[:]
+        parser.close()
+        return token
+
+    def updateItemId(self, user, oldid, response):
         newid = response.getJson().getString('id')
         response.close()
         if newid and oldid != newid:
-            database.updateItemId(newid, oldid)
+            user.DataBase.updateItemId(user.Id, newid, oldid)
             self.updateNewItemId(oldid, newid)
         return newid
 
-    def mergeNewFolder(self, user, oldid, response):
-        newid = None
-        items = self._parseNewFolder(response)
-        if all(items):
-            newid = user.DataBase.updateNewItemId(user.Id, oldid, *items)
-        return newid
+    # Private method
+    def _getRoot(self, rootid):
+        timestamp = currentUnoDateTime()
+        return rootid, timestamp, timestamp
+
+    def _getUser(self, source, request, name):
+        parameter = self.getRequestParameter(request, 'getUser')
+        response = request.execute(parameter)
+        if not response.Ok:
+            msg = self._logger.resolveString(561, parameter.Name, response.StatusCode, response.Text)
+            self._logger.logp(INFO, 'Provider', '_getUser()', msg)
+            raise IllegalIdentifierException(msg, source)
+        return self._parseUser(response)
 
     def _parseNewFolder(self, response):
         newid = created = modified = None
@@ -235,10 +222,33 @@ class Provider(ProviderBase):
         response.close()
         return newid, created, modified
 
+    def _parseUser(self, response):
+        userid = name = displayname = rootid = None
+        events = ijson.sendable_list()
+        parser = ijson.parse_coro(events)
+        iterator = response.iterContent(g_chunk, False)
+        while iterator.hasMoreElements():
+            parser.send(iterator.nextElement().value)
+            for prefix, event, value in events:
+                if (prefix, event) == ('account_id', 'string'):
+                    userid = value
+                elif (prefix, event) == ('email', 'string'):
+                    name = value
+                elif (prefix, event) == ('name.display_name', 'string'):
+                    displayname = value
+                elif (prefix, event) == ('root_info.root_namespace_id', 'string'):
+                    rootid = value
+            del events[:]
+        parser.close()
+        response.close()
+        return userid, name, displayname, rootid
+
+    # Requests get Parameter method
     def getRequestParameter(self, request, method, data=None):
         parameter = request.getRequestParameter(method)
         parameter.Url = self.BaseUrl
         parameter.NextUrl = self.BaseUrl
+
         if method == 'getUser':
             parameter.Method = 'POST'
             parameter.Url += '/users/get_current_account'
@@ -278,7 +288,7 @@ class Provider(ProviderBase):
             parameter.setJson('include_deleted', False)
             parameter.setJson('limit', g_pages)
 
-        elif method == 'getDocumentContent':
+        elif method == 'downloadFile':
             parameter.Method = 'POST'
             parameter.Url = self.UploadUrl + '/files/download'
             parameter.setHeader('Dropbox-API-Arg', '{"path": "%s"}' % data.get('Id'))
@@ -339,3 +349,4 @@ class Provider(ProviderBase):
             parameter.setHeader('Content-Type', 'application/octet-stream')
 
         return parameter
+

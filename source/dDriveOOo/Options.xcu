@@ -29,6 +29,9 @@
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:oor="http://openoffice.org/2001/registry"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <prop oor:name="ResetSync">
+    <value>false</value>
+  </prop>
   <prop oor:name="SupportShare">
     <value>false</value>
   </prop>
@@ -40,7 +43,7 @@
     <value xml:lang="fr">Documents partagés</value>
   </prop>
   <prop oor:name="ReplicateTimeout">
-    <value>600</value>
+    <value>60</value>
   </prop>
   <prop oor:name="SynchronizePolicy">
     <value>CLIENT_IS_MASTER</value>
