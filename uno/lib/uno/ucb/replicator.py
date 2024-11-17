@@ -129,12 +129,12 @@ class Replicator(Thread):
             sync = self._initUser(user, full, share)
         elif policy == self._getSynchronizePolicy('SERVER_IS_MASTER'):
             pass
-            #if self._pullUser(user):
-            #    sync = self._pushUser(user)
+            if self._pullUser(user):
+                sync = self._pushUser(user)
         elif policy == self._getSynchronizePolicy('CLIENT_IS_MASTER'):
             pass
-            #if self._pushUser(user):
-            #    sync = self._pullUser(user)
+            if self._pushUser(user):
+                sync = self._pullUser(user)
         if sync:
             self._logger.logprb(INFO, g_class, mtd, 132, user.Name)
 
