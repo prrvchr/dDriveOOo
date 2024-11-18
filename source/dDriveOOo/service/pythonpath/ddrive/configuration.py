@@ -54,11 +54,6 @@ g_doc_map = {'application/vnd.microsoft-apps.document':     'application/vnd.oas
              'application/vnd.microsoft-apps.presentation': 'application/vnd.oasis.opendocument.presentation',
              'application/vnd.microsoft-apps.drawing':      'application/pdf'}
 
-g_cache = 20
-
-# The URL separator
-g_separator = '/'
-
 # Resource strings files folder
 g_resource = 'resource'
 # Logging required global variable

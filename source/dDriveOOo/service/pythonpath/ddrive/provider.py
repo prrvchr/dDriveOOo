@@ -87,9 +87,7 @@ class Provider(ProviderBase):
         return (user.RootId, )
 
     def getUser(self, source, request, name):
-        user = self._getUser(source, request, name)
-        root = self._getRoot(user[-1])
-        return user, root
+        return self._getUser(source, request)
 
     def mergeNewFolder(self, user, oldid, response):
         newid = None
@@ -98,8 +96,8 @@ class Provider(ProviderBase):
             newid = user.DataBase.updateNewItemId(user.Id, oldid, *items)
         return newid
 
-    def parseFolder(self, parameter, content):
-        return self.parseItems(content.User.Request, parameter, content.User.RootId)
+    def parseFolder(self, user, data, parameter):
+        return self.parseItems(user.Request, parameter, user.RootId)
 
     def parseItems(self, request, parameter, rootid):
         addchild = canrename = True
@@ -192,17 +190,11 @@ class Provider(ProviderBase):
         return newid
 
     # Private method
-    def _getRoot(self, rootid):
-        timestamp = currentUnoDateTime()
-        return rootid, timestamp, timestamp
-
-    def _getUser(self, source, request, name):
+    def _getUser(self, source, request):
         parameter = self.getRequestParameter(request, 'getUser')
         response = request.execute(parameter)
         if not response.Ok:
-            msg = self._logger.resolveString(561, parameter.Name, response.StatusCode, response.Text)
-            self._logger.logp(INFO, 'Provider', '_getUser()', msg)
-            raise IllegalIdentifierException(msg, source)
+            self.raiseIllegalIdentifierException(source, 561, parameter, response)
         return self._parseUser(response)
 
     def _parseNewFolder(self, response):
@@ -224,6 +216,7 @@ class Provider(ProviderBase):
 
     def _parseUser(self, response):
         userid = name = displayname = rootid = None
+        timestamp = currentUnoDateTime()
         events = ijson.sendable_list()
         parser = ijson.parse_coro(events)
         iterator = response.iterContent(g_chunk, False)
@@ -241,7 +234,12 @@ class Provider(ProviderBase):
             del events[:]
         parser.close()
         response.close()
-        return userid, name, displayname, rootid
+        return {'Id': userid,
+                'Name': name,
+                'DisplayName': displayname,
+                'RootId': rootid,
+                'DateCreated': timestamp,
+                'DateModified': timestamp}
 
     # Requests get Parameter method
     def getRequestParameter(self, request, method, data=None):
@@ -283,7 +281,7 @@ class Provider(ProviderBase):
             parameter.Method = 'POST'
             parameter.Url += '/files/list_folder'
             parameter.NextUrl += '/files/list_folder/continue'
-            path = '' if data.IsRoot else data.Id
+            path = '' if data.get('IsRoot') else data.get('Id')
             parameter.setJson('path', path)
             parameter.setJson('include_deleted', False)
             parameter.setJson('limit', g_pages)
