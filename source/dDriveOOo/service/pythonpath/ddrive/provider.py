@@ -27,9 +27,6 @@
 ╚════════════════════════════════════════════════════════════════════════════════════╝
 """
 
-import uno
-import unohelper
-
 from com.sun.star.logging.LogLevel import INFO
 
 from com.sun.star.ucb import IllegalIdentifierException
@@ -57,10 +54,8 @@ from .configuration import g_chunk
 from .configuration import g_pages
 from .configuration import g_ucpfolder
 
-import json
 import ijson
 import traceback
-from mutagen._senf import sep
 
 
 class Provider(ProviderBase):
@@ -104,7 +99,6 @@ class Provider(ProviderBase):
         trashed = readonly = versionable = False
         link = ''
         while parameter.hasNextPage():
-            cursor = None
             response = request.execute(parameter)
             if response.Ok:
                 events = ijson.sendable_list()
