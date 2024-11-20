@@ -4,7 +4,7 @@
 """
 ╔════════════════════════════════════════════════════════════════════════════════════╗
 ║                                                                                    ║
-║   Copyright (c) 2020 https://prrvchr.github.io                                     ║
+║   Copyright (c) 2020-24 https://prrvchr.github.io                                  ║
 ║                                                                                    ║
 ║   Permission is hereby granted, free of charge, to any person obtaining            ║
 ║   a copy of this software and associated documentation files (the "Software"),     ║
@@ -245,11 +245,6 @@ class Provider(ProviderBase):
             parameter.Method = 'POST'
             parameter.Url += '/users/get_current_account'
 
-        elif method == 'getItem':
-            parameter.Method = 'POST'
-            parameter.Url += '/file_requests/get'
-            parameter.setJson('id', data)
-
         elif method == 'getFirstPull':
             parameter.Method = 'POST'
             parameter.Url += '/files/list_folder'
@@ -285,7 +280,7 @@ class Provider(ProviderBase):
             parameter.Url = self.UploadUrl + '/files/download'
             parameter.setHeader('Dropbox-API-Arg', '{"path": "%s"}' % data.get('Id'))
 
-        elif method == 'updateTitle':
+        elif method == 'updateName':
             parameter.Method = 'POST'
             parameter.Url += '/files/move_v2'
             path = '' if data.get('AtRoot') else data.get('ParentId')
@@ -311,12 +306,6 @@ class Provider(ProviderBase):
             parameter.Method = 'POST'
             parameter.Url += '/files/create_folder_v2'
             parameter.setJson('path', data.get('Path') + data.get('Title'))
-
-        elif method == 'createNewFile':
-            parameter.Method = 'POST'
-            parameter.Url += '/file_requests/create'
-            parameter.setJson('title', data.get('Title'))
-            parameter.setJson('destination', data.get('Path'))
 
         # For parameter see: https://www.dropbox.com/developers/documentation/http/documentation#files-upload
         elif method == 'getUploadLocation':
