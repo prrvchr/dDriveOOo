@@ -178,8 +178,10 @@ class User():
 
     # method called from DataSource.queryContent()
     def getContent(self, authority, uri):
-        isroot = uri.getPathSegmentCount() == 0
-        return self._getContent(authority, uri.getPath(), isroot)
+        path = uri.getPath()
+        print("User.getContent() Count: %s - Path: %s" % (uri.getPathSegmentCount(), uri.getPath()))
+        isroot = path == g_ucbseparator or uri.getPathSegmentCount() == 0
+        return self._getContent(authority, path.removesuffix('/'), isroot)
 
     def setLock(self):
         if self._lock is not None:
