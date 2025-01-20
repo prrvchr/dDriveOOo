@@ -29,7 +29,7 @@
 
 **L'utilisation de ce logiciel vous soumet à nos [Conditions d'utilisation][4] et à notre [Politique de protection des données][5].**
 
-# version [1.1.6][6]
+# version [1.2.0][6]
 
 ## Introduction:
 
@@ -267,7 +267,15 @@ Bien que cette fonctionnalité ne soit nécessaire que pour gDriveOOo, elle est 
 - Le réplicateur fournit une journalisation plus complète.
 - De nombreuses corrections.
 
-### Que reste-t-il à faire pour la version 1.1.6:
+### Ce qui a été fait pour la version 1.2.0:
+
+- L'extension vous demandera d'installer les extensions OAuth2OOo et jdbcDriverOOo en version respectivement 1.4.0 et 1.4.6 minimum.
+- Il est possible de construire l'archive de l'extension (ie: le fichier oxt) avec l'utilitaire [Apache Ant][58] et le fichier script [build.xml][59].
+- L'extension refusera de s'installer sous OpenOffice quelle que soit la version ou LibreOffice autre que 7.x ou supérieur.
+- Ajout des fichiers binaires nécessaires aux bibliothèques Python pour fonctionner sous Linux et LibreOffice 24.8 (ie: Python 3.9).
+- Afin d'utiliser un port arbitraire pour le retour du code d'autorisation OAuth2, l'URL de redirection passant par Github (ie: `https://prrvchr.github.io/OAuth2OOo/source/OAuth2OOo/registration/OAuth2Redirect`) est désormais utilisée.
+
+### Que reste-t-il à faire pour la version 1.2.0:
 
 - Ajouter de nouvelles langue pour l'internationalisation...
 
@@ -278,7 +286,7 @@ Bien que cette fonctionnalité ne soit nécessaire que pour gDriveOOo, elle est 
 [3]: <https://prrvchr.github.io/dDriveOOo>
 [4]: <https://prrvchr.github.io/dDriveOOo/source/dDriveOOo/registration/TermsOfUse_fr>
 [5]: <https://prrvchr.github.io/dDriveOOo/source/dDriveOOo/registration/PrivacyPolicy_fr>
-[6]: <https://prrvchr.github.io/dDriveOOo/README_fr#ce-qui-a-%C3%A9t%C3%A9-fait-pour-la-version-116>
+[6]: <https://prrvchr.github.io/dDriveOOo/README_fr#ce-qui-a-%C3%A9t%C3%A9-fait-pour-la-version-120>
 [7]: <https://prrvchr.github.io/README_fr>
 [8]: <https://fr.libreoffice.org/download/telecharger-libreoffice/>
 [9]: <https://www.openoffice.org/fr/Telecharger/>
@@ -299,7 +307,7 @@ Bien que cette fonctionnalité ne soit nécessaire que pour gDriveOOo, elle est 
 [24]: <https://img.shields.io/github/v/tag/prrvchr/jdbcDriverOOo?label=latest#right>
 [25]: <img/dDriveOOo.svg#middle>
 [26]: <https://github.com/prrvchr/dDriveOOo/releases/latest/download/dDriveOOo.oxt>
-[27]: <https://img.shields.io/github/downloads/prrvchr/dDriveOOo/latest/total?label=v1.1.6#right>
+[27]: <https://img.shields.io/github/downloads/prrvchr/dDriveOOo/latest/total?label=v1.2.0#right>
 [28]: <https://bz.apache.org/ooo/show_bug.cgi?id=128569>
 [29]: <https://github.com/prrvchr/dDriveOOo/blob/master/uno/lib/uno/ucb/replicator.py>
 [30]: <https://github.com/prrvchr/dDriveOOo/blob/master/uno/lib/uno/ucb/database.py>
@@ -330,3 +338,5 @@ Bien que cette fonctionnalité ne soit nécessaire que pour gDriveOOo, elle est 
 [55]: <https://pypi.org/project/packaging/>
 [56]: <https://pypi.org/project/setuptools/>
 [57]: <https://github.com/prrvchr/dDriveOOo/security/dependabot/1>
+[58]: <https://ant.apache.org/>
+[59]: <https://github.com/prrvchr/dDriveOOo/blob/master/source/dDriveOOo/build.xml>

@@ -54,39 +54,77 @@
       <prop oor:name="ClientSecret">
         <value></value>
       </prop>
-      <prop oor:name="AuthorizationUrl">
-        <value>https://www.dropbox.com/oauth2/authorize</value>
-      </prop>
-      <prop oor:name="AuthorizationParameters">
-        <value>{"locale": "current_language", "token_access_type": "offline"}</value>
-      </prop>
-      <prop oor:name="TokenUrl">
-        <value>https://api.dropboxapi.com/oauth2/token</value>
-      </prop>
-      <prop oor:name="TokenParameters">
-        <value>{}</value>
-      </prop>
-      <prop oor:name="CodeChallenge">
-        <value>true</value>
+      <prop oor:name="RedirectUri">
+        <value>https://prrvchr.github.io/OAuth2OOo/source/OAuth2OOo/registration/OAuth2Redirect</value>
       </prop>
       <prop oor:name="CodeChallengeMethod">
         <value>S256</value>
       </prop>
-      <prop oor:name="HttpHandler">
-        <value>true</value>
-      </prop>
-      <prop oor:name="RedirectAddress">
-        <value>127.0.0.1</value>
-      </prop>
-      <prop oor:name="RedirectPort">
-        <value>8080</value>
-      </prop>
-      <prop oor:name="SignIn">
-        <value>false</value>
-      </prop>
-      <prop oor:name="SignInPage">
-        <value></value>
-      </prop>
+      <node oor:name="Authorization">
+        <prop oor:name="Url">
+          <value>https://www.dropbox.com/oauth2/authorize</value>
+        </prop>
+        <prop oor:name="Arguments">
+          <value>{"prompt": "consent", "reponse_mode": "query", "response_type": "code", "token_access_type": "offline", "code_challenge_method": "${CodeChallengeMethod}", "code_challenge": "${CodeChallenge}", "client_id": "${ClientId}", "scope": "${Scopes}", "redirect_uri": "${RedirectUri}", "state": "${State}", "login_hint": "${User}", "locale": "${Language}"}</value>
+        </prop>
+      </node>
+      <node oor:name="Token">
+        <prop oor:name="Name">
+          <value>getToken</value>
+        </prop>
+        <prop oor:name="Method">
+          <value>POST</value>
+        </prop>
+        <prop oor:name="Url">
+          <value>https://api.dropbox.com/oauth2/token</value>
+        </prop>
+        <prop oor:name="Arguments">
+          <value>{"Form": {"grant_type": "authorization_code", "client_id": "${ClientId}", "redirect_uri": "${RedirectUri}", "code": "${Code}", "code_verifier": "${CodeVerifier}"}}</value>
+        </prop>
+        <node oor:name="Responses">
+          <node oor:name="AccessToken" oor:op="fuse">
+            <prop oor:name="Item">
+              <value>access_token string</value>
+            </prop>
+          </node>
+          <node oor:name="RefreshToken" oor:op="fuse">
+            <prop oor:name="Item">
+              <value>refresh_token string</value>
+            </prop>
+          </node>
+          <node oor:name="ExpiresIn" oor:op="fuse">
+            <prop oor:name="Item">
+              <value>expires_in number</value>
+            </prop>
+          </node>
+        </node>
+      </node>
+      <node oor:name="RefreshToken">
+        <prop oor:name="Name">
+          <value>getRefreshToken</value>
+        </prop>
+        <prop oor:name="Method">
+          <value>POST</value>
+        </prop>
+        <prop oor:name="Url">
+          <value>https://api.dropbox.com/oauth2/token</value>
+        </prop>
+        <prop oor:name="Arguments">
+          <value>{"Form": {"grant_type": "refresh_token", "client_id": "${ClientId}", "refresh_token": "${RefreshToken}"}}</value>
+        </prop>
+        <node oor:name="Responses">
+          <node oor:name="AccessToken" oor:op="fuse">
+            <prop oor:name="Item">
+              <value>access_token string</value>
+            </prop>
+          </node>
+          <node oor:name="ExpiresIn" oor:op="fuse">
+            <prop oor:name="Item">
+              <value>expires_in number</value>
+            </prop>
+          </node>
+        </node>
+      </node>
     </node>
   </node>
 </oor:component-data>
