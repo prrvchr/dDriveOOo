@@ -274,6 +274,8 @@ Bien que cette fonctionnalité ne soit nécessaire que pour gDriveOOo, elle est 
 - L'extension refusera de s'installer sous OpenOffice quelle que soit la version ou LibreOffice autre que 7.x ou supérieur.
 - Ajout des fichiers binaires nécessaires aux bibliothèques Python pour fonctionner sous Linux et LibreOffice 24.8 (ie: Python 3.9).
 - Afin d'utiliser un port arbitraire pour le retour du code d'autorisation OAuth2, l'URL de redirection passant par Github (ie: `https://prrvchr.github.io/OAuth2OOo/source/OAuth2OOo/registration/OAuth2Redirect`) est désormais utilisée.
+- La possibilité de ne pas spécifier le nom du compte de l'utilisateur dans l'URL est à nouveau fonctionnelle.
+- Ajout de la portée `files.content.read` aux droits OAuth2 requis par l'API Dropbox pour autoriser les téléchargements de fichiers.
 
 ### Que reste-t-il à faire pour la version 1.2.0:
 
