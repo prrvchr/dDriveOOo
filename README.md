@@ -29,7 +29,7 @@
 
 **The use of this software subjects you to our [Terms Of Use][4] and [Data Protection Policy][5].**
 
-# version [1.2.0][6]
+# version [1.2.1][6]
 
 ## Introduction:
 
@@ -277,7 +277,14 @@ Although this functionality is only needed for gDriveOOo, it is implemented glob
 - The ability to not specify the user's account name in the URL is working again.
 - Added `files.content.read` scope to OAuth2 rights required by Dropbox API to allow file uploads.
 
-### What remains to be done for version 1.2.0:
+### What has been done for version 1.2.1:
+
+- Updated the [Python packaging][55] package to version 24.2.
+- Updated the [Python setuptools][56] package to version 75.8.0.
+- Updated the [Python six][60] package to version 1.17.0.
+- Support for Python version 3.13.
+
+### What remains to be done for version 1.2.1:
 
 - Add new language for internationalization...
 
@@ -288,7 +295,7 @@ Although this functionality is only needed for gDriveOOo, it is implemented glob
 [3]: <https://prrvchr.github.io/dDriveOOo/README_fr>
 [4]: <https://prrvchr.github.io/dDriveOOo/source/dDriveOOo/registration/TermsOfUse_en>
 [5]: <https://prrvchr.github.io/dDriveOOo/source/dDriveOOo/registration/PrivacyPolicy_en>
-[6]: <https://prrvchr.github.io/dDriveOOo#what-has-been-done-for-version-120>
+[6]: <https://prrvchr.github.io/dDriveOOo#what-has-been-done-for-version-121>
 [7]: <https://prrvchr.github.io/>
 [8]: <https://www.libreoffice.org/download/download/>
 [9]: <https://www.openoffice.org/download/index.html>
@@ -309,7 +316,7 @@ Although this functionality is only needed for gDriveOOo, it is implemented glob
 [24]: <https://img.shields.io/github/v/tag/prrvchr/jdbcDriverOOo?label=latest#right>
 [25]: <img/dDriveOOo.svg#middle>
 [26]: <https://github.com/prrvchr/dDriveOOo/releases/latest/download/dDriveOOo.oxt>
-[27]: <https://img.shields.io/github/downloads/prrvchr/dDriveOOo/latest/total?label=v1.2.0#right>
+[27]: <https://img.shields.io/github/downloads/prrvchr/dDriveOOo/latest/total?label=v1.2.1#right>
 [28]: <https://bz.apache.org/ooo/show_bug.cgi?id=128569>
 [29]: <https://github.com/prrvchr/dDriveOOo/blob/master/uno/lib/uno/ucb/replicator.py>
 [30]: <https://github.com/prrvchr/dDriveOOo/blob/master/uno/lib/uno/ucb/database.py>
@@ -342,3 +349,4 @@ Although this functionality is only needed for gDriveOOo, it is implemented glob
 [57]: <https://github.com/prrvchr/dDriveOOo/security/dependabot/1>
 [58]: <https://ant.apache.org/>
 [59]: <https://github.com/prrvchr/dDriveOOo/blob/master/source/dDriveOOo/build.xml>
+[60]: <https://pypi.org/project/six/>
