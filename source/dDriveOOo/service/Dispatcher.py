@@ -44,8 +44,8 @@ import traceback
 
 # pythonloader looks for a static g_ImplementationHelper variable
 g_ImplementationHelper = unohelper.ImplementationHelper()
-g_ImplementationName = 'io.github.prrvchr.gDriveOOo.Dispatcher'
-g_ServiceNames = ('io.github.prrvchr.gDriveOOo.Dispatcher', )
+g_ImplementationName = 'io.github.prrvchr.dDriveOOo.Dispatcher'
+g_ServiceNames = ('io.github.prrvchr.dDriveOOo.Dispatcher', )
 
 
 class Dispatcher(unohelper.Base,
