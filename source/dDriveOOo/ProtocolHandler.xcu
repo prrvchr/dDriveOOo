@@ -33,7 +33,7 @@
     <node oor:name="HandlerSet">
         <node oor:name="io.github.prrvchr.dDriveOOo.Dispatcher" oor:op="replace">
             <prop oor:name="Protocols">
-                <value>ddrive:*</value>
+                <value>vnd-dropbox:*</value>
             </prop>
         </node>
     </node>
