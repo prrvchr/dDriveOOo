@@ -27,7 +27,6 @@
 ╚════════════════════════════════════════════════════════════════════════════════════╝
 """
 
-import uno
 import unohelper
 
 from com.sun.star.logging.LogLevel import SEVERE
@@ -57,6 +56,7 @@ class OptionsHandler(unohelper.Base,
     def __init__(self, ctx):
         self._ctx = ctx
         self._manager = None
+        self._logger = getLogger(ctx, g_defaultlog)
 
     # XContainerWindowEventHandler
     def callHandlerMethod(self, window, event, method):
@@ -64,7 +64,7 @@ class OptionsHandler(unohelper.Base,
             handled = False
             if method == 'external_event':
                 if event == 'initialize':
-                    self._manager = OptionsManager(self._ctx, window)
+                    self._manager = OptionsManager(self._ctx, self._logger, window)
                     handled = True
                 elif event == 'ok':
                     self._manager.saveSetting()
@@ -81,8 +81,14 @@ class OptionsHandler(unohelper.Base,
             elif method == 'DisableSync':
                 self._manager.enableSync(False)
                 handled = True
+            elif method == 'Reset':
+                self._manager.setReset(bool(event.Source.State))
+                handled = True
             elif method == 'ViewData':
                 self._manager.viewData()
+                handled = True
+            elif method == 'ViewFile':
+                self._manager.viewFile()
                 handled = True
             elif method == 'Download':
                 self._manager.download()
@@ -110,15 +116,16 @@ class OptionsHandler(unohelper.Base,
                 handled = True
             return handled
         except Exception as e:
-            print("OptionsHandler.callHandlerMethod() Error: %s - %s" % (e, traceback.format_exc()))
-            getLogger(self._ctx, g_defaultlog).logprb(SEVERE, 'OptionsHandler', 'callHandlerMethod', 141, e, traceback.format_exc())
+            self._logger.logprb(SEVERE, 'OptionsHandler', 'callHandlerMethod', 141, e, traceback.format_exc())
 
     def getSupportedMethodNames(self):
         return ('external_event',
                 'EnableShare',
                 'EnableSync',
                 'DisableSync',
+                'Reset',
                 'ViewData',
+                'ViewFile',
                 'Download',
                 'Upload',
                 'SpinUp1',
@@ -131,8 +138,10 @@ class OptionsHandler(unohelper.Base,
     # XServiceInfo
     def supportsService(self, service):
         return g_ImplementationHelper.supportsService(g_ImplementationName, service)
+
     def getImplementationName(self):
         return g_ImplementationName
+
     def getSupportedServiceNames(self):
         return g_ImplementationHelper.getSupportedServiceNames(g_ImplementationName)
 
