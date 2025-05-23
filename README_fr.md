@@ -29,7 +29,7 @@
 
 **L'utilisation de ce logiciel vous soumet à nos [Conditions d'utilisation][4] et à notre [Politique de protection des données][5].**
 
-# version [1.2.1][6]
+# version [1.3.0][6]
 
 ## Introduction:
 
@@ -348,7 +348,7 @@ Bien que cette fonctionnalité ne soit nécessaire que pour gDriveOOo, elle est 
 [24]: <https://img.shields.io/github/v/tag/prrvchr/jdbcDriverOOo?label=latest#right>
 [25]: <img/dDriveOOo.svg#middle>
 [26]: <https://github.com/prrvchr/dDriveOOo/releases/latest/download/dDriveOOo.oxt>
-[27]: <https://img.shields.io/github/downloads/prrvchr/dDriveOOo/latest/total?label=v1.2.1#right>
+[27]: <https://img.shields.io/github/downloads/prrvchr/dDriveOOo/latest/total?label=v1.3.0#right>
 [28]: <https://github.com/LibreOffice/loeclipse>
 [29]: <https://adoptium.net/temurin/releases/?version=8&package=jdk>
 [30]: <https://ant.apache.org/manual/install.html>
