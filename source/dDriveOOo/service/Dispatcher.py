@@ -36,7 +36,7 @@ from com.sun.star.lang import XServiceInfo
 
 from ddrive import Dispatch
 
-from ddrive import hasInterface
+from ddrive import hasFrameInterface
 
 from ddrive import g_identifier
 from ddrive import g_scheme
@@ -60,9 +60,7 @@ class Dispatcher(unohelper.Base,
 
 # XInitialization
     def initialize(self, args):
-        service = 'com.sun.star.frame.Frame'
-        interface = 'com.sun.star.lang.XServiceInfo'
-        if len(args) > 0 and hasInterface(args[0], interface) and args[0].supportsService(service):
+        if isinstance(args, tuple) and len(args) and hasFrameInterface(args[0]):
             self._frame = args[0]
 
 # XDispatchProvider
@@ -89,6 +87,8 @@ class Dispatcher(unohelper.Base,
     def getSupportedServiceNames(self):
         return g_ImplementationHelper.getSupportedServiceNames(g_ImplementationName)
 
+
 g_ImplementationHelper.addImplementation(Dispatcher,                      # UNO object class
                                          g_ImplementationName,            # Implementation name
                                          g_ServiceNames)                  # List of implemented services
+
